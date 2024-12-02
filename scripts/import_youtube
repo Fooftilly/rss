@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ -z "$1" ]; then
+  echo "Please provide an argument file"
+  exit 1
+fi
+
+if [ ! -f "$1" ]; then
+  echo "File not found"
+  exit 1
+fi
+
+sfeed_opml_import < "$1" > $HOME/rss/youtube/sfeedrc
+
+# Fix path for youtube
+sed -i '1s/^#sfeedpath=.*/sfeedpath="$HOME\/rss\/youtube\/feeds"/' $HOME/rss/youtube/sfeedrc
+
+# Add maxjobs line after sfeedpath
+sed -i '/^sfeedpath=/a maxjobs=1' $HOME/rss/youtube/sfeedrc

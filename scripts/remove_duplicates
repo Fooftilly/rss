@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Check if the file name is provided
+if [ -z "$1" ]; then
+    echo "Please provide the name of the file to remove duplicates from."
+    exit 1
+fi
+
+# Check if the file exists
+if [ ! -f "$1" ]; then
+    echo "The specified file does not exist."
+    exit 1
+fi
+
+# Count the number of lines in the original file
+original_lines=$(wc -l < "$1")
+
+# Remove duplicate lines from the file and count the number of unique lines
+unique_lines=$(sort -u "$1" | tee >(wc -l > /dev/tty) | wc -l)
+
+# Count the number of duplicate lines removed
+duplicate_lines=$((original_lines - unique_lines))
+
+echo "$duplicate_lines duplicates were removed."
+
+# Remove duplicate lines from the file
+sort -u "$1" -o "$1"

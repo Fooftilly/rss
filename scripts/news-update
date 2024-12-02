@@ -1,0 +1,8 @@
+#!/bin/sh
+
+sfeed_update $HOME/rss/news/sfeedrc
+
+export SFEED_AUTOCMD="t"
+export SFEED_URL_FILE="$HOME/rss/urls"
+[ -f "$SFEED_URL_FILE" ] || touch "$SFEED_URL_FILE"
+sfeed_curses $HOME/rss/news/feeds/*

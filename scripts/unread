@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Count the unread and total items from news feeds using the URL file.
+awk -F '\t' '
+# URL file: amount of fields is 1.
+NF == 1 {
+  u[$0] = 1; # lookup table of URLs.
+  next;
+}
+# feed file: check by URL or id.
+{
+  if(match($0,/news/)){
+    total_news++;
+    if (length($3)) {
+      if (u[$3])
+        read_news++;
+    } else if (length($6)) {
+      if (u[$6])
+        read_news++;
+    }
+  }
+}
+END {
+  print "News Unread: " (total_news - read_news);
+  print "News Total:  " total_news;
+}' $HOME/rss/urls $HOME/rss/news/feeds/*
+
+# Count the unread and total items from youtube feeds using the URL file.
+awk -F '\t' '
+# URL file: amount of fields is 1.
+NF == 1 {
+  u[$0] = 1; # lookup table of URLs.
+  next;
+}
+# feed file: check by URL or id.
+{
+  if(match($0,/youtube/)){
+    total_youtube++;
+    if (length($3)) {
+      if (u[$3])
+        read_youtube++;
+    } else if (length($6)) {
+      if (u[$6])
+        read_youtube++;
+    }
+  }
+}
+END {
+  print "Youtube Unwatched: " (total_youtube - read_youtube);
+  print "Youtube Total:  " total_youtube;
+}' $HOME/rss/urls-youtube $HOME/rss/youtube/feeds/*

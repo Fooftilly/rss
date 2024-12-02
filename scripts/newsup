@@ -1,0 +1,20 @@
+#!/bin/sh
+
+while true; do
+  # Check if we can ping Google's DNS server at 8.8.8.8
+  if ping -c 3 -W 2 8.8.8.8 > /dev/null 2>&1; then
+    # We have a connection, so update the RSS feeds
+    /usr/bin/sfeed_update $HOME/rss/news/sfeedrc
+    /usr/bin/sfeed_update $HOME/rss/youtube/sfeedrc
+
+    /usr/bin/notify-send "📰 RSS feed update complete."
+    /usr/bin/notify-send "$($HOME/rss/scripts/unread)"
+
+    # Break out of the loop
+    break
+  else
+    # We don't have a connection, so wait one minute before trying again
+    /usr/bin/notify-send "Network connection unavailable. RSS update will be attempted again in 60 seconds."
+    sleep 60
+  fi
+done

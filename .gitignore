@@ -1,0 +1,9 @@
+urls
+news/feeds/*
+news/etags/*
+youtube/feeds/*
+youtube/news/*
+test/*
+urls-youtube
+urls-torrents
+torrents/feeds/*
