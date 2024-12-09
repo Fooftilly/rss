@@ -19,6 +19,7 @@ filter() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "Philosophical Disquisitions" "https://philosophicaldisquisitions.blogspot.com/feeds/posts/default"
 	feed "Our World in Data" "https://ourworldindata.org/atom.xml"
 	feed "C. Thi Nguyen" "https://objectionable.net/feed/"
 	feed "Death to the World" "https://deathtotheworld.com/feed/"
