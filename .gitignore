@@ -6,3 +6,4 @@ youtube/news/*
 test/*
 urls-youtube
 urls-torrents
+*.log
