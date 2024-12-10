@@ -5,20 +5,22 @@ maxjobs=2
 filter() {
     awk -F '\t' 'BEGIN { OFS = "\t"; }
     {
-        # skip lines with links containing any of the specified patterns
-        if (match($0, /vijesti\.me\/(vijesti\/auto|sport|lifestyle|tv|naslovne-strane)/) ||
-            match($0, /zabava\/(gaming|showbizz|zanimljivo)/) ||
-            match($0, /vijesti\/m-tech/))
-        {
+        # Define patterns to exclude
+        exclude_patterns = "vijesti\\.me/(vijesti/auto|sport|lifestyle|tv|naslovne-strane)|zabava/(gaming|showbizz|zanimljivo)|vijesti/m-tech|rtvslo\\.si/(mmc-kast|sport)"
+
+        # Skip lines with links containing any of the specified patterns
+        if ($0 ~ exclude_patterns) {
             next;
         }
         print $0;
     }'
 }
 
+
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "Two Stop Bits" "https://twostopbits.com/rss"
 	feed "Philosophical Disquisitions" "https://philosophicaldisquisitions.blogspot.com/feeds/posts/default"
 	feed "Our World in Data" "https://ourworldindata.org/atom.xml"
 	feed "C. Thi Nguyen" "https://objectionable.net/feed/"
