@@ -16,6 +16,16 @@ filter() {
     }'
 }
 
+# Custom fetch function with ETag handling and User-Agent specification
+fetch() {
+	etag="$HOME/rss/etags/$(basename "$3")"
+	curl \
+		-L --max-redirs 0 -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0" -f -s -m 15 \
+		--compressed \
+		--etag-save "${etag}" --etag-compare "${etag}" \
+		-z "${etag}" \
+		"$2" 2>/dev/null
+}
 
 # list of feeds to fetch:
 feeds() {
