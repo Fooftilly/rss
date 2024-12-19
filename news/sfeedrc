@@ -30,6 +30,9 @@ fetch() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "Undark" "https://undark.org/feed/"
+	feed "Nautilus" "https://nautil.us/feed/"
+	feed "Aeon" "https://aeon.co/feed.atom"
 	feed "Two Stop Bits" "https://twostopbits.com/rss"
 	feed "Philosophical Disquisitions" "https://philosophicaldisquisitions.blogspot.com/feeds/posts/default"
 	feed "Our World in Data" "https://ourworldindata.org/atom.xml"
@@ -196,4 +199,5 @@ feeds() {
 	#Slovenian
 	feed "Total News Slovenia - Dual Texts" "https://www.total-slovenia-news.com/tag/dual-text?format=feed"
 	feed "RTVSLO Vse novice" "https://img.rtvslo.si/feeds/00.xml"
+	feed "Vida Matjan" "https://vidamatjan.com/feed/"
 }
