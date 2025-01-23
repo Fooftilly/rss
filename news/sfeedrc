@@ -30,7 +30,8 @@ fetch() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
-	feed "The Collector" "https://www.thecollector.com/rss/"
+	feed "Alex Ross - The Rest is Noise" "https://www.therestisnoise.com/atom.xml"
+	feed "Classics Today" "https://www.classicstoday.com/feed/"
 	feed "Undark" "https://undark.org/feed/"
 	feed "Nautilus" "https://nautil.us/feed/"
 	feed "Aeon" "https://aeon.co/feed.atom"
@@ -134,6 +135,7 @@ feeds() {
 	feed "Muzej pozorišne umetnosti Srbije" "https://mpus.org.rs/feed/"
 	feed "XKCD" "https://xkcd.com/rss.xml"
 	feed "Existential Comics" "https://existentialcomics.com/rss.xml"
+	feed "Podgorica - Vijesti" "https://podgorica.me/feed/"
 
 
 	#British Library Blogs
@@ -152,37 +154,6 @@ feeds() {
 	feed "British Library - Untold Lives" "https://blogs.bl.uk/untoldlives/atom.xml"
 
 
-	#Subtrack
-	feed "Thomas Flight Field Notes" "https://thomasflight.substack.com/feed"
-	feed "Extra Focus" "https://www.extrafocus.com/feed"
-	feed "New Work in Philosophy" "https://newworkinphilosophy.substack.com/feed"
-	feed "The Philosophical Economist" "https://erikangner.substack.com/feed"
-	feed "Good Thoughts" "https://rychappell.substack.com/feed"
-	feed "Fake Nous" "https://fakenous.substack.com/feed"
-	feed "Joe Sarlsmith" "https://joecarlsmith.substack.com/feed"
-	feed "Mostly Aesthetics" "https://mostly.substack.com/feed"
-	feed "Under the Net" "https://ksetiya.substack.com/feed"
-	feed "Rotten Wood Can Be Carved" "https://rottenwood.substack.com/feed"
-	feed "The Archimedean Point" "https://cyrilhedoin.substack.com/feed"
-	feed "Curiosity Sink" "https://curiositysink.substack.com/feed"
-	feed "The Palindrome" "https://thepalindrome.substack.com/feed"
-	feed "Asianometry" "https://asianometry.substack.com/feed"
-	feed "Hinternet" "https://justinehsmith.substack.com/feed"
-	feed "It's her factory" "https://itsherfactory.substack.com/feed"
-	feed "Infinitely More" "https://joeldavidhamkins.substack.com/feed"
-	feed "Running Ideas" "https://nicolasdelon.substack.com/feed"
-	feed "Philosophy for the People" "https://benburgis.substack.com/feed"
-	feed "Uncommon Wisdon" "https://jimmyalfonsolicon.substack.com/feed"
-	feed "The Splintered Mind" "https://eschwitz.substack.com/feed"
-	feed "Value Judgments" "https://valuejudgments.substack.com/feed"
-	feed "The Honest Broker" "https://tedgioia.substack.com/feed"
-	feed "Eric Ding Journal" "https://drericding.substack.com/feed"
-	feed "Noahpinion" "https://www.noahpinion.blog/feed"
-	feed "The Roots of Progress" "https://newsletter.rootsofprogress.org/feed"
-	feed "Edward Snowden" "https://edwardsnowden.substack.com/feed"
-	feed "Podgorica - Vijesti" "https://podgorica.me/feed/"
-
-
 	#Github
 	feed "Github - OpenMW" "https://github.com/OpenMW/openmw/releases.atom"
 	feed "Github - OMW Android" "https://github.com/docent27/OMW/releases.atom"
@@ -196,6 +167,7 @@ feeds() {
 	feed "UCG" "https://politepol.com/fd/JYGvqE90zAxm"
 	feed "Vlada Crne Gore" "https://politepol.com/fd/xOaKEGCo7lfS"
 	feed "Podgorica - Servisne informacije" "https://politepol.com/fd/Mkh3bgsvzym4"
+
 
 	#Slovenian
 	feed "Total News Slovenia - Dual Texts" "https://www.total-slovenia-news.com/tag/dual-text?format=feed"
