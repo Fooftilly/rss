@@ -291,7 +291,6 @@ feeds() {
 	feed 'mia cole' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCJevtlUb_IRKmoZmW3ZHUPA'
 	feed 'Mia Mulder' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC_OttpBEWWzSUlZbk5qmhSA'
 	feed 'Michael Burns' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCmZ9rAoFzPOKQbYutepd_5g'
-	feed 'Michael MJD' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCS-WzPVpAAli-1IfEG2lN8A'
 	feed 'Michael P. Dawson' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCRkM_LbkOZYIubNqsmG31SQ'
 	feed 'Michael Sugrue' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCFaYLR_1aryjfB7hLrKGRaQ'
 	feed 'Middle 8' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCfeppgcy70ERp4gQrsYijsg'
