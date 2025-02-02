@@ -47,7 +47,6 @@ feeds() {
 	feed "Catalyst Journal" "https://catalyst-journal.com/feed/"
 	feed "Herbert Marcuse" "https://www.marcuse.org/feed.xml"
 	feed "Fenomeni" "https://fenomeni.me/feed/"
-	feed "Časopis Kvaka" "https://www.casopiskvaka.com.hr/feeds/posts/default?alt=rss"
 	feed "Blue Labyrinths Magazine" "https://bluelabyrinths.com/feed/"
 	feed "A Collection of Unmitigated Pedantry" "https://acoup.blog/feed/"
 	feed "Age of Inovation - Anton Howes" "https://www.ageofinvention.xyz/feed"
