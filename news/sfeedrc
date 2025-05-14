@@ -30,6 +30,7 @@ fetch() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "Vijesti" "https://www.vijesti.me/rss"
 	feed "Alex Ross - The Rest is Noise" "https://www.therestisnoise.com/atom.xml"
 	feed "Classics Today" "https://www.classicstoday.com/feed/"
 	feed "Undark" "https://undark.org/feed/"
