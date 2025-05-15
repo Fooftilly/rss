@@ -6,7 +6,7 @@ filter() {
     awk -F '\t' 'BEGIN { OFS = "\t"; }
     {
         # Define patterns to exclude
-        exclude_patterns = "vijesti\\.me/(vijesti/auto|sport|lifestyle|tv|naslovne-strane)|zabava/(gaming|showbizz|zanimljivo)|vijesti/m-tech|rtvslo\\.si/(mmc-kast|sport)"
+        exclude_patterns = "vijesti\\.me/(vijesti/auto|marketing|sport|lifestyle|tv|naslovne-strane)|zabava/(gaming|showbizz|zanimljivo)|vijesti/m-tech|rtvslo\\.si/(mmc-kast|sport)"
 
         # Skip lines with links containing any of the specified patterns
         if ($0 ~ exclude_patterns) {
