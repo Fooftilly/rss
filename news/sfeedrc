@@ -30,14 +30,27 @@ fetch() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "WIRED Culture" "https://www.wired.com/feed/category/culture/latest/rss"
+	feed "MIT Research" "https://news.mit.edu/rss/research"
+	feed "MIT Technology Review" "https://www.technologyreview.com/feed/"
+	feed "The National Archives" "https://www.nationalarchives.gov.uk/rss/news.xml"
+	feed "The National Archives (New Documents)" "https://www.nationalarchives.gov.uk/rss/foireleasesnews.xml"
+	feed "FreshNews (Most Clicked)" "https://feeds.feedburner.com/FreshnewsMostClicked"
+	feed "Phoronix" "https://www.phoronix.com/rss.php"
 	feed "Vijesti" "https://www.vijesti.me/rss"
 	feed "The Paris Review" "https://www.theparisreview.org/blog/feed/"
+	feed "London Review of Books" "https://www.lrb.co.uk/feeds/rss"
+	feed "Real Life Mag" "https://reallifemag.com/feed/"
+	feed "Lit Hub" "https://lithub.com/feed/"
 	feed "NewYorker Culture" "https://www.newyorker.com/feed/culture"
 	feed "ARTnews" "https://www.artnews.com/feed/"
 	feed "NYTimes Arts" "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/international/section/arts/rss.xml"
 	feed "Artnet News" "https://news.artnet.com/feed"
 	feed "The Art Newspaper" "https://www.theartnewspaper.com/rss.xml"
 	feed "BBC Culture" "https://www.bbc.com/culture/feed.rss"
+	feed "NPR Culture" "https://feeds.npr.org/1008/rss.xml"
+	feed "NPR Music" "https://feeds.npr.org/1039/rss.xml"
+	feed "Vanity Fair" "https://www.vanityfair.com/feed/rss"
 	feed "Pitchfork" "https://pitchfork.com/feed/rss"
 	feed "Hearing Things" "https://www.hearingthings.co/latest/rss/"
 	feed "The Quietus" "https://thequietus.com/feed/"
@@ -93,6 +106,7 @@ feeds() {
 	feed "Matica srpska" "https://www.maticasrpska.org.rs/feed/"
 	feed "Matica srpska CG" "https://maticasrpskacg.org/feed/"
 	feed "Hacker News" "https://news.ycombinator.com/rss"
+	feed "Tildes.net" "https://tildes.net/topics.atom"
 	feed "Estetičko društvo Srbije" "https://estetickodrustvosrbije.com/feed/"
 	feed "Daily Nous" "https://dailynous.com/feed/"
 	feed "1000-Word Philosophy" "https://1000wordphilosophy.com/feed/"
@@ -157,6 +171,12 @@ feeds() {
 	feed "British Library - Newsroom" "https://blogs.bl.uk/thenewsroom/atom.xml"
 	feed "British Library - Untold Lives" "https://blogs.bl.uk/untoldlives/atom.xml"
 
+
+	# Free Games
+	feed "Free Games - Epic" "https://feed.phenx.de/lootscraper_epic_game.xml"
+	feed "Feee Games - Gog" "https://feed.phenx.de/lootscraper_gog_game.xml"
+	feed "Free Games - Steam" "https://feed.phenx.de/lootscraper_steam_game.xml"
+	feed "Free Games - Humble Bundle" "https://feed.phenx.de/lootscraper_humble_game.xml"
 
 	#Github
 	feed "Github - OpenMW" "https://github.com/OpenMW/openmw/releases.atom"
