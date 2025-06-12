@@ -30,6 +30,7 @@ fetch() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "computers are bad" "https://computer.rip/rss.xml"
 	feed "WIRED Culture" "https://www.wired.com/feed/category/culture/latest/rss"
 	feed "MIT Research" "https://news.mit.edu/rss/research"
 	feed "MIT Technology Review" "https://www.technologyreview.com/feed/"
