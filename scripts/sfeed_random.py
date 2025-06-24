@@ -111,18 +111,23 @@ def mark_articles_read(urls):
         return False
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: sfeed_random <number_of_articles>")
-        print("Example: sfeed_random 15")
-        sys.exit(1)
-
-    try:
-        num_articles = int(sys.argv[1])
-        if num_articles <= 0:
-            print("Error: Number of articles must be positive")
+    # Default to 20 articles if no argument provided
+    if len(sys.argv) == 1:
+        num_articles = 20
+        print(f"No number specified, using default: {num_articles} articles")
+    elif len(sys.argv) == 2:
+        try:
+            num_articles = int(sys.argv[1])
+            if num_articles <= 0:
+                print("Error: Number of articles must be positive")
+                sys.exit(1)
+        except ValueError:
+            print("Error: Please provide a valid number")
             sys.exit(1)
-    except ValueError:
-        print("Error: Please provide a valid number")
+    else:
+        print("Usage: sfeed_random [number_of_articles]")
+        print("Example: sfeed_random 15")
+        print("If no number is provided, defaults to 20 articles")
         sys.exit(1)
 
     # Get unread articles
