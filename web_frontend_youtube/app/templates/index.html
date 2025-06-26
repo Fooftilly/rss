@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Sfeed Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Using a modern font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="app-title">Web Sfeed</h1>
+                <span class="app-subtitle">YouTube RSS</span>
+            </div>
+
+            <div class="header-center">
+                <div class="search-container">
+                    <input type="text" id="search-input" class="search-input" placeholder="Search videos or channels...">
+                    <button class="search-btn" id="search-btn" aria-label="Search">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <button class="icon-btn" id="theme-toggle" aria-label="Toggle theme">
+                    <!-- Icon will be populated by JS -->
+                </button>
+            </div>
+        </header>
+
+        <div class="app-body">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <div class="nav-section">
+                        <h3 class="nav-section-title">Library</h3>
+                        <ul class="nav-list">
+                            <!-- Navigation links, the 'active' class will be managed by JS -->
+                            <li><a href="#" class="nav-link" data-view="unwatched">Unwatched</a></li>
+                            <li><a href="#" class="nav-link" data-view="bookmarked">Bookmarked</a></li>
+                            <li><a href="#" class="nav-link" data-view="watched">Watched</a></li>
+                            <li><a href="#" class="nav-link" data-view="all">All Videos</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="content-header">
+                    <h2 class="content-title" id="content-title">Unwatched</h2>
+                    <div class="content-controls">
+                        <div class="view-controls">
+                            <button class="view-btn active" data-view-mode="cards" aria-label="Card view">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            </button>
+                            <button class="view-btn" data-view-mode="list" aria-label="List view">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                            </button>
+                        </div>
+                        <select class="form-control" id="sort-select">
+                            <option value="date-desc">Newest First</option>
+                            <option value="date-asc">Oldest First</option>
+                            <option value="title-asc">Title A-Z</option>
+                            <option value="author-asc">Channel A-Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="video-grid" id="video-grid">
+                        <!-- Video cards will be populated by JavaScript -->
+                    </div>
+                    <div id="loader" class="loading">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p id="end-of-results" style="display: none; text-align: center; color: var(--color-text-secondary); margin-top: 2rem;">
+                        You've reached the end.
+                    </p>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

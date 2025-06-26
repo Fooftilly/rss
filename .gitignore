@@ -9,3 +9,4 @@ urls-torrents
 *.log
 /etags
 urls-bookmarks
+/web_frontend_youtube/app/__pycache__
