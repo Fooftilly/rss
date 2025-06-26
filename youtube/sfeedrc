@@ -585,6 +585,4 @@ feeds() {
 	feed 'Zoe Bee' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCecF2icZlEIJ__9XS6woPGw'
 	feed 'Šok koridor' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC6nG72muC0CGkE1N5fdppMQ'
 	feed 'Библијски институт' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCFMCm56IcgTgWRRi4Rwl6lA'
-	feed 'Матица српска - Друштво чланова у Црној Гори' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCJT4z4JUTxXQLAfff4PZGSg'
-	feed 'Радио Светигора' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCnBY9ApptNjGhGDM2MV-e4Q'
 }
