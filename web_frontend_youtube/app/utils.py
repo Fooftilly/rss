@@ -1,8 +1,9 @@
 import os
 import re
 import csv
+import shlex
 from datetime import datetime
-from .config import FEEDS_DIR, URLS_FILE, BOOKMARKS_FILE
+from .config import FEEDS_DIR, URLS_FILE, BOOKMARKS_FILE, SFEEDRC_FILE
 
 # In-memory cache to avoid re-reading files that haven't changed
 _cache = {
@@ -127,3 +128,74 @@ def format_url_for_sfeed_markread(url):
     """Ensures the URL has a trailing newline for the sfeed_markread command."""
     return url if url.endswith('\n') else url + '\n'
 
+def parse_sfeedrc():
+    """Parses the sfeedrc file to extract feed information."""
+    subscriptions = []
+    if not os.path.exists(SFEEDRC_FILE):
+        return []
+
+    try:
+        with open(SFEEDRC_FILE, 'r', encoding='utf-8') as f:
+            content = f.read()
+            # Regex to find lines like: feed 'Channel Name' 'https://...'
+            feed_lines = re.findall(r"^\s*feed\s+('.*?'|\".*?\")\s+('.*?'|\".*?\")", content, re.MULTILINE)
+
+            for name_quoted, url_quoted in feed_lines:
+                # Use shlex to handle quoted strings properly
+                name = shlex.split(name_quoted)[0]
+                url = shlex.split(url_quoted)[0]
+                subscriptions.append({'name': name, 'url': url})
+
+    except Exception as e:
+        print(f"Error parsing sfeedrc file: {e}")
+
+    return subscriptions
+
+def update_sfeedrc(subscriptions):
+    """
+    Writes a list of subscriptions back to the sfeedrc file,
+    preserving the header and footer.
+    """
+    if not os.path.exists(SFEEDRC_FILE):
+        print(f"Error: sfeedrc file not found at {SFEEDRC_FILE}")
+        return False
+
+    try:
+        with open(SFEEDRC_FILE, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
+        # Find the start and end of the feeds() function
+        start_index, end_index = -1, -1
+        for i, line in enumerate(lines):
+            if line.strip().startswith('feeds()'):
+                start_index = i
+            elif start_index != -1 and line.strip() == '}':
+                end_index = i
+                break
+
+        if start_index == -1 or end_index == -1:
+            print("Error: Could not find feeds() function in sfeedrc.")
+            return False
+
+        header = lines[:start_index + 1]
+        footer = lines[end_index:]
+
+        # Create the new feed lines, sorted by name
+        sorted_subscriptions = sorted(subscriptions, key=lambda x: x['name'].lower())
+        new_feed_lines = []
+        for sub in sorted_subscriptions:
+            # Escape single quotes in the name for shell safety.
+            # ' -> '\''
+            escaped_name = sub['name'].replace("'", r"'\''")
+            new_feed_lines.append(f"\tfeed '{escaped_name}' '{sub['url']}'\n")
+
+
+        # Combine everything and write back to the file
+        new_content = header + new_feed_lines + footer
+        with open(SFEEDRC_FILE, 'w', encoding='utf-8') as f:
+            f.writelines(new_content)
+
+        return True
+    except Exception as e:
+        print(f"Error updating sfeedrc file: {e}")
+        return False

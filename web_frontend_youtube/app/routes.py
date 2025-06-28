@@ -1,8 +1,13 @@
 from flask import Blueprint, render_template, request, jsonify, abort
 import subprocess
-# Corrected import statement below
-from .utils import get_all_feeds, format_url_for_sfeed_markread
-from .config import URLS_FILE, BOOKMARKS_FILE, ITEMS_PER_PAGE
+import os
+from .utils import (
+    get_all_feeds,
+    format_url_for_sfeed_markread,
+    parse_sfeedrc,
+    update_sfeedrc
+)
+from .config import URLS_FILE, BOOKMARKS_FILE, ITEMS_PER_PAGE, SFEEDRC_FILE
 
 bp = Blueprint('routes', __name__)
 
@@ -126,5 +131,33 @@ def bookmark():
                 f.write(bookmark_url + '\n')
 
         return jsonify({'success': True, 'action': action})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+# --- Subscription Management Routes ---
+
+@bp.route('/api/subscriptions', methods=['GET'])
+def get_subscriptions():
+    """API endpoint to get the list of current subscriptions."""
+    try:
+        subscriptions = parse_sfeedrc()
+        return jsonify(subscriptions)
+    except Exception as e:
+        print(f"Error in /api/subscriptions: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/api/subscriptions', methods=['POST'])
+def update_subscriptions():
+    """API endpoint to update the entire list of subscriptions."""
+    data = request.get_json()
+    if 'subscriptions' not in data:
+        return jsonify({'success': False, 'error': 'No subscriptions data provided'}), 400
+
+    try:
+        success = update_sfeedrc(data['subscriptions'])
+        if success:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Failed to update sfeedrc file.'}), 500
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
