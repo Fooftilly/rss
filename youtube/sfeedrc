@@ -14,12 +14,11 @@ fetch() {
 
 # list of feeds to fetch:
 feeds() {
-	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed '1000-Word Philosophy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCoo4-jptMPltwKcS4g5ptaQ'
+	feed '12tone' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCTUtqcDkzw7bisadh6AOx5w'
 	feed '2 Artists EXPlain' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCyDBKvPXnc0WdsnQszOqmXA'
 	feed '2kliksphilip' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCEKJKJ3FO-9SFv5x5BzyxhQ'
 	feed '3Blue1Brown' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCYO_jab_esuFRV4b17AJtAw'
-	feed '12tone' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCTUtqcDkzw7bisadh6AOx5w'
-	feed '1000-Word Philosophy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCoo4-jptMPltwKcS4g5ptaQ'
 	feed 'A Well-Rested Dog' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5nlKFUNoskvV5XdW6PbgYw'
 	feed 'Accented Cinema' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCH_VqR5rFFhgjZmM31xA3Ag'
 	feed 'acollieralso' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5E_q3-du7mrDZIyETFZ_Xw'
@@ -30,8 +29,8 @@ feeds() {
 	feed 'Agelast' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCxunmKtYfMYjnf6Mp4eWBxg'
 	feed 'Ahoy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCE1jXbVAGJQEORz9nZqb5bQ'
 	feed 'Alan Fisher' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC-LM91jkqJdWFvm9B5G-w7Q'
-	feed 'Alexander Avila' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC2ME6cK8jWnRSWyUdV0yWJw'
 	feed 'Alexander Arguelles' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCRGtDF5VAywUVwgT51Ud6OQ'
+	feed 'Alexander Avila' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC2ME6cK8jWnRSWyUdV0yWJw'
 	feed 'Alice Cappelle' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCrCTC5_t-HaVJ025DbYITiw'
 	feed 'All Talking Pictures' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCgwzofH4m6mgurbw2f1Gv0A'
 	feed 'Altinfinity' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCCMgT0p9BZJ9JD6l6G1bDAg'
@@ -594,5 +593,4 @@ feeds() {
 	feed 'Zoe Bee' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCecF2icZlEIJ__9XS6woPGw'
 	feed 'Šok koridor' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC6nG72muC0CGkE1N5fdppMQ'
 	feed 'Библијски институт' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCFMCm56IcgTgWRRi4Rwl6lA'
-	feed 'Матица српска - Друштво чланова у Црној Гори' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCJT4z4JUTxXQLAfff4PZGSg'
 }
