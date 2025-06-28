@@ -186,6 +186,7 @@ feeds() {
 	feed 'fig tree' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCnCk_o6ySiM_ZzxubCv899Q'
 	feed 'Film & Media Studies' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC_7oXaj1uECyItN8Gw05URA'
 	feed 'FilmJoy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCEtB-nx5ngoNJWEzYa-yXBg'
+	feed 'Filmski klub OSMICA' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCp3FnJT9HBqTyRs-t68zY4A'
 	feed 'filosoficg' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCkdGHOhbBKJ2ZGl9LMgFjWA'
 	feed 'Filozofski fakultet UCG' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC9QXDDTVGenJt6JRy7EXy0g'
 	feed 'fiona leah' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCft4kH--pqAEmUn8dMtibWQ'
