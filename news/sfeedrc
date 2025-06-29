@@ -30,6 +30,8 @@ fetch() {
 # list of feeds to fetch:
 feeds() {
 	# feed <name> <feedurl> [basesiteurl] [encoding]
+	feed "Slobodni Filozofski" "https://slobodnifilozofski.com/feed"
+	feed "Subversive Festival" "https://subversivefestival.com/feed/"
 	feed "computers are bad" "https://computer.rip/rss.xml"
 	feed "WIRED Culture" "https://www.wired.com/feed/category/culture/latest/rss"
 	feed "MIT Research" "https://news.mit.edu/rss/research"
@@ -122,7 +124,7 @@ feeds() {
 	feed "50 Watts" "https://50watts.com/rss/"
 	feed "Garrit Franke" "https://garrit.xyz/rss.xml"
 	feed "PhilosL" "https://listserv.liv.ac.uk/cgi-bin/wa?RSS&L=PHILOS-L&v=2.0"
-	feed "Institut za filozofiju i društvenu teoriju" "https://ifdt.bg.ac.rs/index.php/feed/"
+	feed "Institut za filozofiju i društvenu teoriju" "https://ifdt.bg.ac.rs/feed/"
 	feed "JSTOR Daily" "https://daily.jstor.org/feed/"
 	feed "Signal Messenger" "https://signal.org/blog/rss.xml"
 	feed "Tor project" "https://blog.torproject.org/feed.xml"
