@@ -283,6 +283,7 @@ feeds() {
 	feed 'Kay And Skittles' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCzNp4KQk_LjX3BlC3wUfMuw'
 	feed 'kayla says' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC7ijoZcX6LtrF9hQwYDnTOA'
 	feed 'Kaz Rowe' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCSwwoUNvQWgZDC8a_O6Qs_A'
+	feed 'Kemal Oksal' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCo9_M2KAfqttcw0BnWRC8Xw'
 	feed 'Kendra Gaylord' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCpgUM6AudvZ-WSlHKOKUWVQ'
 	feed 'Kevin Fang' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCm8EsftbfNzSiRHzc7I59KQ'
 	feed 'KEXP' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC3I2GFN_F8WudD_2jUZbojA'
