@@ -288,6 +288,7 @@ feeds() {
 	feed 'Kevin Fang' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCm8EsftbfNzSiRHzc7I59KQ'
 	feed 'KEXP' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC3I2GFN_F8WudD_2jUZbojA'
 	feed 'Khadija Mbowe' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCbuf70y__Wh3MRxZcbj778Q'
+	feed 'Kill This Plant' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCJAqGbl-PmpIObOqSax_Qbw'
 	feed 'KINOTEKA' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCvGe_doFJmAdvTJM3hgJ7Kw'
 	feed 'Knowing Better' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC8XjmAEDVZSCQjI150cb4QA'
 	feed 'Kris Occhipinti' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCf93fPKwotph47H3_KDcRyg'
