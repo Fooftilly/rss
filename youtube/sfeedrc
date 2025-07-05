@@ -31,6 +31,7 @@ feeds() {
 	feed 'Alan Fisher' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC-LM91jkqJdWFvm9B5G-w7Q'
 	feed 'Alexander Arguelles' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCRGtDF5VAywUVwgT51Ud6OQ'
 	feed 'Alexander Avila' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC2ME6cK8jWnRSWyUdV0yWJw'
+	feed 'Alfo Media' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCiBRvd_WgBNiq0CPmCVSFGw'
 	feed 'Alice Cappelle' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCrCTC5_t-HaVJ025DbYITiw'
 	feed 'All Talking Pictures' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCgwzofH4m6mgurbw2f1Gv0A'
 	feed 'Altinfinity' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCCMgT0p9BZJ9JD6l6G1bDAg'
