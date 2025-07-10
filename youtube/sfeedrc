@@ -262,6 +262,7 @@ feeds() {
 	feed 'Jesse Tribble' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCWdThUGn6xcAtmxBDjOUY6w'
 	feed 'John Green' 'https://www.youtube.com/feeds/videos.xml?channel_id=UChIUP-_S3PzypasXVsY1kJQ'
 	feed 'John Hammond' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCVeW9qkBjo3zosnqUbG7CFw'
+	feed 'John Pistelli' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCRx0ZIro0tQJcOiHLy5uCPw'
 	feed 'Jonas Čeika - CCK Philosophy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCSkzHxIcfoEr69MWBdo0ppg'
 	feed 'Jonny Mozza' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCXUR8T7JRebsIi1y6jM2VKg'
 	feed 'Jordan Harrod' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC1H1NWNTG2Xi3pt85ykVSHA'
