@@ -419,7 +419,6 @@ feeds() {
 	feed 'Philosophermit' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCNqNMq9dEM3VfXLVSl32vEA'
 	feed 'Philosophy in Motion' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCrGQmh7lzx5NtDW05Fsj9Qw'
 	feed 'Philosophy Overdose' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC7q-GcHyjCHkTpXCUTLzy7Q'
-	feed 'Philosophy Tube' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC2PA-AKmVpU6NKCGtZq_rKQ'
 	feed 'Philosophy Vibe' 'https://www.youtube.com/feeds/videos.xml?channel_id=UClepFnDpTP3pLKxVsbLNhDA'
 	feed 'PhilosophyHub' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCaAfai3Ekw7v2a9IMo11D7A'
 	feed 'Pieces of Art' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCHNlb5pIYIFxaHlkVzdqb3w'
