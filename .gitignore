@@ -11,3 +11,4 @@ urls-torrents
 urls-bookmarks
 /web_frontend_youtube/app/__pycache__
 /.vscode
+/web_frontend_news/app/__pycache__
