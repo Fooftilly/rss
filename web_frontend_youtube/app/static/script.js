@@ -153,6 +153,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!state.hasMore && data.feeds.length > 0) {
                 endOfResultsMessage.style.display = 'block';
             }
+
+            // Auto-load more videos if we have fewer than 6 visible
+            setTimeout(() => checkAndLoadMoreVideos(), 100);
         } catch (error) {
             console.error('Error fetching videos:', error);
             videoGrid.innerHTML = `<p style="text-align: center; color: var(--color-error); grid-column: 1 / -1;">Failed to load videos. Please try again later.</p>`;
@@ -387,7 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (state.activeView === 'bookmarked' && action === 'remove') {
                         cardElement.style.transition = 'opacity 0.20s ease';
                         cardElement.style.opacity = '0';
-                        setTimeout(() => cardElement.remove(), 200);
+                        setTimeout(() => {
+                            cardElement.remove();
+                            checkAndLoadMoreVideos();
+                        }, 200);
                     }
                 });
             }
@@ -443,7 +449,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if ((state.activeView === 'unwatched' && isNowWatched) || (state.activeView === 'watched' && !isNowWatched)) {
                         cardElement.style.transition = 'opacity 0.15s ease';
                         cardElement.style.opacity = '0';
-                        setTimeout(() => cardElement.remove(), 150);
+                        setTimeout(() => {
+                            cardElement.remove();
+                            checkAndLoadMoreVideos();
+                        }, 150);
                     }
                 });
             }
@@ -451,6 +460,22 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error toggling watched state:', error);
         } finally {
             if(button) button.disabled = false;
+        }
+    }
+
+    // --- AUTO-LOADING LOGIC ---
+    function countVisibleVideos() {
+        const videoCards = document.querySelectorAll('.video-card');
+        return videoCards.length;
+    }
+
+    function checkAndLoadMoreVideos() {
+        if (state.isLoading || !state.hasMore) return;
+        
+        const visibleCount = countVisibleVideos();
+        if (visibleCount < 6) {
+            state.currentPage++;
+            fetchVideos(false);
         }
     }
 
