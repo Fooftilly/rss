@@ -5,6 +5,9 @@ import shlex
 from datetime import datetime
 from .config import FEEDS_DIR, URLS_FILE, BOOKMARKS_FILE, SFEEDRC_FILE
 
+# Increase CSV field size limit to handle large content fields
+csv.field_size_limit(1000000)
+
 # In-memory cache to avoid re-reading files that haven't changed
 _cache = {
     'feeds': {},  # {filename: (mtime, items)}

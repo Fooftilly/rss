@@ -10,7 +10,7 @@ FEEDS_DIR = os.path.join(RSS_BASE_DIR, "youtube/feeds")
 URLS_FILE = os.path.join(RSS_BASE_DIR, "urls-youtube")
 
 # Path to the file storing bookmarked video URLs
-BOOKMARKS_FILE = os.path.join(RSS_BASE_DIR, "urls-bookmarks")
+BOOKMARKS_FILE = os.path.join(RSS_BASE_DIR, "urls-bookmarks-youtube")
 
 # Path to your sfeedrc file for managing subscriptions
 SFEEDRC_FILE = os.path.join(RSS_BASE_DIR, "youtube/sfeedrc")

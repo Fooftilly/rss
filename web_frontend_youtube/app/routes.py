@@ -115,6 +115,11 @@ def bookmark():
         return jsonify({'success': False, 'error': 'No URL provided'}), 400
 
     try:
+        # Ensure the bookmarks file exists
+        if not os.path.exists(BOOKMARKS_FILE):
+            with open(BOOKMARKS_FILE, 'w') as f:
+                pass  # Create empty file
+
         # Read all current bookmarks
         with open(BOOKMARKS_FILE, 'r') as f:
             bookmarks = set(line.strip() for line in f)
