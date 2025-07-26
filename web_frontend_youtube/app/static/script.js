@@ -193,6 +193,40 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
+    function reRenderVideoCards() {
+        // Get all existing video cards and their data
+        const existingCards = Array.from(document.querySelectorAll('.video-card'));
+        const videoData = existingCards.map(card => ({
+            link: card.dataset.url,
+            watched: JSON.parse(card.dataset.watched),
+            bookmarked: JSON.parse(card.dataset.bookmarked),
+            title: card.querySelector('.video-title').textContent,
+            author: card.querySelector('.video-channel').textContent,
+            date: card.querySelector('.video-date').textContent,
+            thumbnail_url: card.querySelector('.video-thumbnail img').src,
+            video_id: extractVideoIdFromUrl(card.dataset.url)
+        }));
+
+        // Clear the grid and re-render with new view mode
+        videoGrid.innerHTML = '';
+        videoData.forEach(video => {
+            videoGrid.insertAdjacentHTML('beforeend', getVideoCardHTML(video));
+        });
+    }
+
+    function extractVideoIdFromUrl(url) {
+        // Extract YouTube video ID from URL for thumbnail
+        const patterns = [
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&\n?#]+)/,
+            /youtube\.com\/v\/([^&\n?#]+)/,
+        ];
+        for (const pattern of patterns) {
+            const match = url.match(pattern);
+            if (match) return match[1];
+        }
+        return null;
+    }
+
     // --- UI & FILTER UPDATES ---
     function handleFilterChange(updateAction) {
         updateAction();
@@ -351,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Remove cards that should no longer be visible in current view
                     if (state.activeView === 'bookmarked' && action === 'remove') {
-                        cardElement.style.transition = 'opacity 0.3s ease';
+                        cardElement.style.transition = 'opacity 0.15s ease';
                         cardElement.style.opacity = '0';
-                        setTimeout(() => cardElement.remove(), 300);
+                        setTimeout(() => cardElement.remove(), 150);
                     }
                 });
             }
@@ -407,9 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Remove cards that should no longer be visible in current view
                     if ((state.activeView === 'unwatched' && isNowWatched) || (state.activeView === 'watched' && !isNowWatched)) {
-                        cardElement.style.transition = 'opacity 0.3s ease';
+                        cardElement.style.transition = 'opacity 0.15s ease';
                         cardElement.style.opacity = '0';
-                        setTimeout(() => cardElement.remove(), 300);
+                        setTimeout(() => cardElement.remove(), 150);
                     }
                 });
             }
@@ -445,6 +479,9 @@ document.addEventListener('DOMContentLoaded', () => {
             videoGrid.classList.toggle('list-view', state.viewMode === 'list');
             viewButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
+            
+            // Re-render existing video cards with the new view mode
+            reRenderVideoCards();
         });
     });
 
