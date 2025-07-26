@@ -385,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Remove cards that should no longer be visible in current view
                     if (state.activeView === 'bookmarked' && action === 'remove') {
-                        cardElement.style.transition = 'opacity 0.15s ease';
+                        cardElement.style.transition = 'opacity 0.20s ease';
                         cardElement.style.opacity = '0';
-                        setTimeout(() => cardElement.remove(), 150);
+                        setTimeout(() => cardElement.remove(), 200);
                     }
                 });
             }
