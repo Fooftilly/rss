@@ -97,7 +97,7 @@ def parse_feed_file(filepath):
     return items
 
 def get_all_feeds():
-    """Aggregates all items from all feed files."""
+    """Aggregates all items from all feed files with deduplication by URL."""
     all_items = []
     watched_urls = read_urls_file(URLS_FILE)
     bookmarked_urls = read_urls_file(BOOKMARKS_FILE)
@@ -120,9 +120,23 @@ def get_all_feeds():
     except Exception as e:
         print(f"Critical error reading feeds directory: {e}")
 
-    # Default sort by date descending. The API endpoint will handle other sort orders.
-    all_items.sort(key=lambda x: int(x['timestamp']) if str(x.get('timestamp')).isdigit() else 0, reverse=True)
-    return all_items
+    # Deduplicate by URL, keeping only the most recent entry for each URL
+    url_to_item = {}
+    for item in all_items:
+        url = item['link']
+        if url not in url_to_item:
+            url_to_item[url] = item
+        else:
+            # Keep the item with the most recent timestamp
+            existing_timestamp = int(url_to_item[url]['timestamp']) if str(url_to_item[url].get('timestamp')).isdigit() else 0
+            current_timestamp = int(item['timestamp']) if str(item.get('timestamp')).isdigit() else 0
+            if current_timestamp > existing_timestamp:
+                url_to_item[url] = item
+
+    # Convert back to list and sort by date descending
+    deduplicated_items = list(url_to_item.values())
+    deduplicated_items.sort(key=lambda x: int(x['timestamp']) if str(x.get('timestamp')).isdigit() else 0, reverse=True)
+    return deduplicated_items
 
 def format_url_for_sfeed_markread(url):
     """Ensures the URL has a trailing newline for the sfeed_markread command."""

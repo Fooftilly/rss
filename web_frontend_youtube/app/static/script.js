@@ -322,6 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const card = button.closest('.video-card');
         if (!card || button.disabled) return;
 
+        const videoUrl = card.dataset.url;
         const isBookmarked = JSON.parse(card.dataset.bookmarked);
         const action = isBookmarked ? 'remove' : 'add';
         button.disabled = true;
@@ -330,18 +331,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/bookmark', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: card.dataset.url, action }),
+                body: JSON.stringify({ url: videoUrl, action }),
             });
             const data = await response.json();
             if (data.success) {
-                card.dataset.bookmarked = (action === 'add').toString();
-                button.classList.toggle('active', action === 'add');
-                // No text change needed for icon-only buttons
-                if (state.activeView === 'bookmarked' && action === 'remove') {
-                    card.style.transition = 'opacity 0.3s ease';
-                    card.style.opacity = '0';
-                    setTimeout(() => card.remove(), 300);
-                }
+                // Update all cards with the same URL in the current view
+                const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoUrl)}"]`);
+                allCardsWithSameUrl.forEach(cardElement => {
+                    cardElement.dataset.bookmarked = (action === 'add').toString();
+                    
+                    const cardButton = cardElement.querySelector('.bookmark-btn');
+                    if (cardButton) {
+                        cardButton.classList.toggle('active', action === 'add');
+                        const btnText = cardButton.querySelector('.btn-text');
+                        if (btnText) {
+                            btnText.textContent = action === 'add' ? 'Bookmarked' : 'Bookmark';
+                        }
+                    }
+
+                    // Remove cards that should no longer be visible in current view
+                    if (state.activeView === 'bookmarked' && action === 'remove') {
+                        cardElement.style.transition = 'opacity 0.3s ease';
+                        cardElement.style.opacity = '0';
+                        setTimeout(() => cardElement.remove(), 300);
+                    }
+                });
             }
         } catch (error) {
             console.error('Error toggling bookmark:', error);
@@ -365,24 +379,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!card || (button && button.disabled)) return;
         if(button) button.disabled = true;
 
+        const videoUrl = card.dataset.url;
+
         try {
             const response = await fetch('/mark_watched', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: card.dataset.url, action }),
+                body: JSON.stringify({ url: videoUrl, action }),
             });
             const data = await response.json();
             if (data.success) {
                 const isNowWatched = (action === 'read');
-                card.dataset.watched = isNowWatched.toString();
-                card.classList.toggle('read', isNowWatched);
-                if(button) button.querySelector('.btn-text').textContent = isNowWatched ? 'Mark Unwatched' : 'Mark Watched';
+                
+                // Update all cards with the same URL in the current view
+                const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoUrl)}"]`);
+                allCardsWithSameUrl.forEach(cardElement => {
+                    cardElement.dataset.watched = isNowWatched.toString();
+                    cardElement.classList.toggle('read', isNowWatched);
+                    
+                    const cardButton = cardElement.querySelector('.watch-btn');
+                    if (cardButton) {
+                        const btnText = cardButton.querySelector('.btn-text');
+                        if (btnText) {
+                            btnText.textContent = isNowWatched ? 'Mark Unwatched' : 'Mark Watched';
+                        }
+                    }
 
-                if ((state.activeView === 'unwatched' && isNowWatched) || (state.activeView === 'watched' && !isNowWatched)) {
-                    card.style.transition = 'opacity 0.3s ease';
-                    card.style.opacity = '0';
-                    setTimeout(() => card.remove(), 300);
-                }
+                    // Remove cards that should no longer be visible in current view
+                    if ((state.activeView === 'unwatched' && isNowWatched) || (state.activeView === 'watched' && !isNowWatched)) {
+                        cardElement.style.transition = 'opacity 0.3s ease';
+                        cardElement.style.opacity = '0';
+                        setTimeout(() => cardElement.remove(), 300);
+                    }
+                });
             }
         } catch (error) {
             console.error('Error toggling watched state:', error);
