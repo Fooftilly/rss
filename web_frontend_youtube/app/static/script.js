@@ -439,7 +439,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const videoData = extractVideoDataFromCard(card);
             trackInteraction('view', videoData);
 
-            performWatchAction(card, 'read');
+            // This is a click to watch, so use 'clicked' interaction type
+            performWatchAction(card, 'read', 'clicked');
         }
     };
 
@@ -557,7 +558,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const isWatched = JSON.parse(card.dataset.watched);
         const action = isWatched ? 'unread' : 'read';
-        performWatchAction(card, action);
+        // This is just marking as watched, so use 'marked' interaction type
+        performWatchAction(card, action, action === 'read' ? 'marked' : undefined);
     };
 
     function extractVideoDataFromCard(card) {
@@ -569,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    async function performWatchAction(card, action) {
+    async function performWatchAction(card, action, interactionType = 'marked') {
         const button = card.querySelector('.watch-btn');
         if (!card || (button && button.disabled)) return;
         if (button) button.disabled = true;
@@ -585,7 +587,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     action,
                     video_id: videoData.video_id,
                     title: videoData.title,
-                    author: videoData.author
+                    author: videoData.author,
+                    interaction_type: interactionType
                 }),
             });
             const data = await response.json();
@@ -688,8 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = `
             <div class="stats-section">
                 <h3>Learning Progress</h3>
-                <p><strong>Videos Watched:</strong> ${stats.total_watched}</p>
+                <p><strong>Total Videos Watched:</strong> ${stats.total_watched}</p>
                 <p><strong>Videos Starred:</strong> ${stats.total_starred || 0}</p>
+                <p><strong>Clicked to Watch:</strong> ${stats.clicked_to_watch || 0} <span style="color: var(--color-success);">(high preference)</span></p>
+                <p><strong>Marked as Watched:</strong> ${stats.marked_as_watched || 0} <span style="color: var(--color-text-secondary);">(low preference)</span></p>
                 <p><strong>Last Updated:</strong> ${lastUpdated}</p>
             </div>
         `;

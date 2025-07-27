@@ -55,10 +55,10 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 - **Search**: Type in the search box to filter videos by title, channel, or content
 - **Sort**: Use the dropdown to sort videos by date, title, channel, or get personalized recommendations
 - **Actions**: 
-  - Click "Mark as Watched/Unwatched" to toggle watched status
-  - Click "Bookmark/Remove Bookmark" to save videos for later
-  - Click "Star/Unstar" to indicate high preference (improves recommendations)
-  - Click "Open Video" to open in a new tab (automatically marks as watched)
+  - **Click thumbnail/title** to open video (high preference signal - full learning boost)
+  - **Click "Mark as Watched"** to just mark as seen (low preference signal - minimal learning)
+  - **Click "Star"** to indicate high preference (3x learning boost)
+  - **Click "Bookmark"** to save videos for later
 - **Subscriptions**: Manage your YouTube channel subscriptions through the interface
 - **Recommendations**: View your recommendation stats and see how the system learns your preferences
 
@@ -88,6 +88,7 @@ The application includes an intelligent recommendation engine that learns from y
 - **Content Analysis**: Analyzes video titles to understand your topic preferences
 - **Viewing Patterns**: Tracks when you typically watch videos
 - **Skip Detection**: Notices when you skip videos to avoid similar content
+- **Interaction Weighting**: Differentiates between clicking to watch (high preference) vs marking as watched (low preference)
 
 ### Features
 - **Personalized Sorting**: Select "Recommended" from the sort dropdown to see videos ranked by your preferences

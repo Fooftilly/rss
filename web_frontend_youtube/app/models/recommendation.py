@@ -70,29 +70,47 @@ class RecommendationEngine:
         except IOError as e:
             print(f"Error saving recommendation data: {e}")
     
-    def record_watch(self, video_id, title, author, timestamp=None):
-        """Record that a user watched a video"""
+    def record_watch(self, video_id, title, author, timestamp=None, interaction_type='clicked'):
+        """Record that a user watched a video
+        
+        Args:
+            interaction_type: 'clicked' (opened video) or 'marked' (just marked as watched)
+        """
         if timestamp is None:
             timestamp = time.time()
         
-        # Store watch record
+        # Store watch record with interaction type
         self.user_data['watched_videos'][video_id] = {
             'timestamp': timestamp,
             'title': title,
-            'author': author
+            'author': author,
+            'interaction_type': interaction_type
         }
         
-        # Update channel preference (positive reinforcement)
-        self.user_data['channel_scores'][author] += 1.0
+        # Different reinforcement based on interaction type
+        if interaction_type == 'clicked':
+            # Full positive reinforcement for actually clicking to watch
+            channel_boost = 1.0
+            keyword_boost = 0.5
+            time_boost = 1
+        else:  # 'marked'
+            # Lower reinforcement for just marking as watched
+            channel_boost = 0.3
+            keyword_boost = 0.15
+            time_boost = 0
+        
+        # Update channel preference
+        self.user_data['channel_scores'][author] += channel_boost
         
         # Update keyword scores from title
         keywords = self._extract_keywords(title)
         for keyword in keywords:
-            self.user_data['keyword_scores'][keyword] += 0.5
+            self.user_data['keyword_scores'][keyword] += keyword_boost
         
-        # Update time pattern
-        hour = datetime.fromtimestamp(timestamp).hour
-        self.user_data['time_patterns'][hour] += 1
+        # Update time pattern (only for clicked videos)
+        if time_boost > 0:
+            hour = datetime.fromtimestamp(timestamp).hour
+            self.user_data['time_patterns'][hour] += time_boost
         
         self._save_user_data()
     
@@ -162,7 +180,8 @@ class RecommendationEngine:
             'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should',
             'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we',
             'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her',
-            'its', 'our', 'their', 'how', 'what', 'when', 'where', 'why', 'who'
+            'its', 'our', 'their', 'how', 'what', 'when', 'where', 'why', 'who', 
+            'about', 'than'
         }
         
         # Clean and split title
@@ -239,9 +258,17 @@ class RecommendationEngine:
             keyword_scores = {k: v for k, v in dict(self.user_data['keyword_scores']).items() if v > 0}
             time_patterns = {k: v for k, v in dict(self.user_data['time_patterns']).items() if v > 0}
             
+            # Count different interaction types
+            clicked_count = sum(1 for v in self.user_data['watched_videos'].values() 
+                              if v.get('interaction_type') == 'clicked')
+            marked_count = sum(1 for v in self.user_data['watched_videos'].values() 
+                             if v.get('interaction_type') == 'marked')
+            
             return {
                 'total_watched': len(self.user_data['watched_videos']),
                 'total_starred': len(self.user_data.get('starred_videos', {})),
+                'clicked_to_watch': clicked_count,
+                'marked_as_watched': marked_count,
                 'top_channels': dict(Counter(channel_scores).most_common(10)),
                 'top_keywords': dict(Counter(keyword_scores).most_common(10)),
                 'active_hours': dict(Counter(time_patterns).most_common(5)),
@@ -253,6 +280,8 @@ class RecommendationEngine:
             return {
                 'total_watched': 0,
                 'total_starred': 0,
+                'clicked_to_watch': 0,
+                'marked_as_watched': 0,
                 'top_channels': {},
                 'top_keywords': {},
                 'active_hours': {},

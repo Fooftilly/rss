@@ -113,8 +113,9 @@ def mark_watched():
                 video_id = data.get('video_id')
                 title = data.get('title', '')
                 author = data.get('author', '')
+                interaction_type = data.get('interaction_type', 'marked')  # 'clicked' or 'marked'
                 if video_id and title and author:
-                    recommendation_engine.record_watch(video_id, title, author)
+                    recommendation_engine.record_watch(video_id, title, author, interaction_type=interaction_type)
             
             return jsonify({'success': True, 'action': action})
         else:
@@ -172,7 +173,7 @@ def track_interaction():
         if interaction_type == 'skip':
             recommendation_engine.record_skip(video_id, title, author)
         elif interaction_type == 'view':
-            recommendation_engine.record_watch(video_id, title, author)
+            recommendation_engine.record_watch(video_id, title, author, interaction_type='clicked')
         
         return jsonify({'success': True})
     except Exception as e:
