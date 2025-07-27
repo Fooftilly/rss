@@ -4,7 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Sfeed Interface</title>
+    <title>Web Sfeed - YouTube RSS Reader with Smart Recommendations</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="A modern web interface for YouTube RSS feeds with AI-powered recommendations. Watch, star, and discover videos with intelligent content curation.">
+    <meta name="keywords" content="YouTube, RSS, feed reader, recommendations, AI, video, sfeed">
+    <meta name="author" content="Web Sfeed">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Web Sfeed - YouTube RSS Reader">
+    <meta property="og:description" content="Smart YouTube RSS feed reader with AI-powered recommendations">
+    <meta property="og:image" content="{{ url_for('static', filename='favicon-192x192.png') }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:title" content="Web Sfeed - YouTube RSS Reader">
+    <meta property="twitter:description" content="Smart YouTube RSS feed reader with AI-powered recommendations">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon-dark.svg') }}"
+        media="(prefers-color-scheme: dark)">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="192x192" href="{{ url_for('static', filename='favicon-192x192.png') }}">
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+    <!-- Theme colors -->
+    <meta name="theme-color" content="#21808D">
+    <meta name="msapplication-TileColor" content="#21808D">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Using a modern font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

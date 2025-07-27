@@ -1110,4 +1110,33 @@ Star button styling */
 
 .star-btn.active svg {
   fill: currentColor;
+}/* Dislik
+e button styling */
+.dislike-btn {
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.dislike-btn:hover {
+  color: #ef4444; /* Red color for dislike */
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.dislike-btn.active {
+  color: #ef4444; /* Red color for disliked */
+  background-color: rgba(239, 68, 68, 0.15);
+}
+
+.dislike-btn.active:hover {
+  color: #dc2626; /* Darker red on hover */
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Dislike icon fill animation */
+.dislike-btn svg {
+  transition: fill 0.2s ease;
+}
+
+.dislike-btn.active svg {
+  fill: currentColor;
 }

@@ -24,9 +24,11 @@ class RecommendationEngine:
             try:
                 with open(self.data_file, 'r') as f:
                     data = json.load(f)
-                    # Ensure starred_videos exists
+                    # Ensure starred_videos and disliked_videos exist
                     if 'starred_videos' not in data:
                         data['starred_videos'] = {}
+                    if 'disliked_videos' not in data:
+                        data['disliked_videos'] = {}
                     # Convert to defaultdicts for easier usage
                     data['channel_scores'] = defaultdict(float, data.get('channel_scores', {}))
                     data['keyword_scores'] = defaultdict(float, data.get('keyword_scores', {}))
@@ -39,6 +41,7 @@ class RecommendationEngine:
         data = {
             'watched_videos': {},  # video_id: {'timestamp': int, 'title': str, 'author': str}
             'starred_videos': {},  # video_id: {'timestamp': int, 'title': str, 'author': str}
+            'disliked_videos': {},  # video_id: {'timestamp': int, 'title': str, 'author': str}
             'channel_scores': {},  # author: score
             'keyword_scores': {},  # keyword: score
             'time_patterns': {},  # hour: count
@@ -60,6 +63,7 @@ class RecommendationEngine:
             data_to_save = {
                 'watched_videos': self.user_data['watched_videos'],
                 'starred_videos': self.user_data.get('starred_videos', {}),
+                'disliked_videos': self.user_data.get('disliked_videos', {}),
                 'channel_scores': dict(self.user_data['channel_scores']),
                 'keyword_scores': dict(self.user_data['keyword_scores']),
                 'time_patterns': dict(self.user_data['time_patterns']),
@@ -158,6 +162,48 @@ class RecommendationEngine:
         
         self._save_user_data()
     
+    def record_dislike(self, video_id, title, author, timestamp=None):
+        """Record that a user dislikes a video/channel (decrease preference)"""
+        if timestamp is None:
+            timestamp = time.time()
+        
+        # Store disliked video record
+        if 'disliked_videos' not in self.user_data:
+            self.user_data['disliked_videos'] = {}
+        
+        self.user_data['disliked_videos'][video_id] = {
+            'timestamp': timestamp,
+            'title': title,
+            'author': author
+        }
+        
+        # Significant negative reinforcement for disliked content
+        self.user_data['channel_scores'][author] -= 2.0  # Strong negative signal
+        
+        # Negative keyword scores from disliked video titles
+        keywords = self._extract_keywords(title)
+        for keyword in keywords:
+            self.user_data['keyword_scores'][keyword] -= 1.0  # Negative keyword association
+        
+        self._save_user_data()
+    
+    def record_undislike(self, video_id, title, author):
+        """Record that a user removed dislike from a video"""
+        # Remove from disliked videos
+        if 'disliked_videos' in self.user_data and video_id in self.user_data['disliked_videos']:
+            del self.user_data['disliked_videos'][video_id]
+        
+        # Restore some of the negative scores (but don't make them too positive)
+        current_score = self.user_data['channel_scores'][author]
+        self.user_data['channel_scores'][author] = min(current_score + 1.5, 0.5)  # Cap at 0.5
+        
+        keywords = self._extract_keywords(title)
+        for keyword in keywords:
+            current_keyword_score = self.user_data['keyword_scores'][keyword]
+            self.user_data['keyword_scores'][keyword] = min(current_keyword_score + 0.75, 0.25)  # Cap at 0.25
+        
+        self._save_user_data()
+    
     def record_skip(self, video_id, title, author):
         """Record that a user skipped/ignored a video"""
         # Slight negative reinforcement for channels/keywords of skipped videos
@@ -181,7 +227,7 @@ class RecommendationEngine:
             'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we',
             'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her',
             'its', 'our', 'their', 'how', 'what', 'when', 'where', 'why', 'who', 
-            'about', 'than'
+            'about', 'than', 'not', 'part', 'all'
         }
         
         # Clean and split title
@@ -219,11 +265,14 @@ class RecommendationEngine:
         except (ValueError, TypeError):
             pass
         
-        # Handle starred and watched videos
+        # Handle starred, disliked, and watched videos
         video_id = video.get('video_id')
         if video_id:
+            # Heavy penalty for disliked videos
+            if video_id in self.user_data.get('disliked_videos', {}):
+                score *= 0.01  # Almost eliminate disliked videos
             # Bonus for starred videos (even if watched)
-            if video_id in self.user_data.get('starred_videos', {}):
+            elif video_id in self.user_data.get('starred_videos', {}):
                 score *= 1.5  # 50% bonus for starred videos
             # Penalty for watched but not starred videos
             elif video_id in self.user_data['watched_videos']:
@@ -267,6 +316,7 @@ class RecommendationEngine:
             return {
                 'total_watched': len(self.user_data['watched_videos']),
                 'total_starred': len(self.user_data.get('starred_videos', {})),
+                'total_disliked': len(self.user_data.get('disliked_videos', {})),
                 'clicked_to_watch': clicked_count,
                 'marked_as_watched': marked_count,
                 'top_channels': dict(Counter(channel_scores).most_common(10)),
@@ -280,6 +330,7 @@ class RecommendationEngine:
             return {
                 'total_watched': 0,
                 'total_starred': 0,
+                'total_disliked': 0,
                 'clicked_to_watch': 0,
                 'marked_as_watched': 0,
                 'top_channels': {},

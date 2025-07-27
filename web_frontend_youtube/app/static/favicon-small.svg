@@ -1,0 +1,23 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#21808D"/>
+      <stop offset="100%" style="stop-color:#1D6B75"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="8" cy="8" r="7.5" fill="url(#bgGrad)" stroke="#0F3A42" stroke-width="0.5"/>
+  
+  <!-- Simplified RSS dot -->
+  <circle cx="4" cy="12" r="1" fill="#FCFCF9"/>
+  
+  <!-- Single RSS arc -->
+  <path d="M4 10 A2 2 0 0 1 6 12" stroke="#FCFCF9" stroke-width="1" fill="none" stroke-linecap="round"/>
+  
+  <!-- Simplified play button -->
+  <polygon points="6,5 6,11 11,8" fill="#FCFCF9"/>
+  
+  <!-- Simple star -->
+  <polygon points="12,3 12.5,4.5 14,4.5 12.8,5.3 13.3,6.8 12,6 10.7,6.8 11.2,5.3 10,4.5 11.5,4.5" fill="#FBBF24"/>
+</svg>

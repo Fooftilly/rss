@@ -3,7 +3,7 @@ import re
 import csv
 import shlex
 from datetime import datetime
-from .config import FEEDS_DIR, URLS_FILE, BOOKMARKS_FILE, STARRED_FILE, SFEEDRC_FILE
+from .config import FEEDS_DIR, URLS_FILE, BOOKMARKS_FILE, STARRED_FILE, DISLIKED_FILE, SFEEDRC_FILE
 
 # Increase CSV field size limit to handle large content fields
 csv.field_size_limit(1000000)
@@ -105,6 +105,7 @@ def get_all_feeds():
     watched_urls = read_urls_file(URLS_FILE)
     bookmarked_urls = read_urls_file(BOOKMARKS_FILE)
     starred_urls = read_urls_file(STARRED_FILE)
+    disliked_urls = read_urls_file(DISLIKED_FILE)
 
     if not os.path.exists(FEEDS_DIR):
         print(f"Warning: Feeds directory does not exist: {FEEDS_DIR}")
@@ -121,6 +122,7 @@ def get_all_feeds():
                 item['watched'] = item['link'] in watched_urls
                 item['bookmarked'] = item['link'] in bookmarked_urls
                 item['starred'] = item['link'] in starred_urls
+                item['disliked'] = item['link'] in disliked_urls
             all_items.extend(items)
     except Exception as e:
         print(f"Critical error reading feeds directory: {e}")

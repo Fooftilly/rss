@@ -7,7 +7,7 @@ from .utils import (
     parse_sfeedrc,
     update_sfeedrc
 )
-from .config import URLS_FILE, BOOKMARKS_FILE, STARRED_FILE, ITEMS_PER_PAGE, SFEEDRC_FILE
+from .config import URLS_FILE, BOOKMARKS_FILE, STARRED_FILE, DISLIKED_FILE, ITEMS_PER_PAGE, SFEEDRC_FILE
 from .models.recommendation import recommendation_engine
 
 bp = Blueprint('routes', __name__)
@@ -232,6 +232,18 @@ def health_check():
     """Simple health check endpoint"""
     return jsonify({'status': 'ok', 'message': 'API is working'})
 
+@bp.route('/favicon.ico')
+def favicon():
+    """Serve favicon.ico"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'favicon.ico')
+
+@bp.route('/favicon-test')
+def favicon_test():
+    """Serve favicon test page"""
+    from flask import send_from_directory
+    return send_from_directory('static', 'favicon-test.html')
+
 @bp.route('/star', methods=['POST'])
 def star():
     """Stars or unstars a video."""
@@ -271,6 +283,48 @@ def star():
         with open(STARRED_FILE, 'w') as f:
             for starred_url in sorted(list(starred)):
                 f.write(starred_url + '\n')
+
+        return jsonify({'success': True, 'action': action})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/dislike', methods=['POST'])
+def dislike():
+    """Dislikes or removes dislike from a video."""
+    data = request.get_json()
+    url = data.get('url')
+    video_id = data.get('video_id', '')
+    title = data.get('title', '')
+    author = data.get('author', '')
+    action = data.get('action', 'dislike')  # 'dislike' or 'undislike'
+    
+    if not all([url, video_id, title, author]):
+        return jsonify({'success': False, 'error': 'Missing required data'}), 400
+
+    try:
+        # Ensure the disliked file exists
+        if not os.path.exists(DISLIKED_FILE):
+            with open(DISLIKED_FILE, 'w') as f:
+                pass  # Create empty file
+
+        # Read all current disliked videos
+        with open(DISLIKED_FILE, 'r') as f:
+            disliked = set(line.strip() for line in f)
+
+        # Add or remove the URL
+        if action == 'dislike':
+            disliked.add(url)
+            # Also record in recommendation engine
+            recommendation_engine.record_dislike(video_id, title, author)
+        elif action == 'undislike':
+            disliked.discard(url)
+            # Also record in recommendation engine
+            recommendation_engine.record_undislike(video_id, title, author)
+
+        # Write the updated set back to the file
+        with open(DISLIKED_FILE, 'w') as f:
+            for disliked_url in sorted(list(disliked)):
+                f.write(disliked_url + '\n')
 
         return jsonify({'success': True, 'action': action})
     except Exception as e:

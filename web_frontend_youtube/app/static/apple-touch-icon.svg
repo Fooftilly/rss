@@ -1,0 +1,59 @@
+<svg width="180" height="180" viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#21808D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D6B75;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Inner shadow for depth -->
+    <radialGradient id="innerShadow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" style="stop-color:#2A9BAA;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#134252;stop-opacity:0.1" />
+    </radialGradient>
+    
+    <!-- Glow effect for star -->
+    <filter id="starGlow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Rounded rectangle background (iOS style) -->
+  <rect x="10" y="10" width="160" height="160" rx="35" ry="35" fill="url(#bgGradient)" stroke="#0F3A42" stroke-width="2"/>
+  <rect x="12" y="12" width="156" height="156" rx="33" ry="33" fill="url(#innerShadow)"/>
+  
+  <!-- RSS feed waves (scaled up) -->
+  <g stroke="#FCFCF9" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main RSS dot -->
+    <circle cx="50" cy="140" r="8" fill="#FCFCF9"/>
+    
+    <!-- RSS arcs -->
+    <path d="M50 125 A15 15 0 0 1 65 140" stroke-width="8" opacity="0.9"/>
+    <path d="M50 110 A30 30 0 0 1 80 140" stroke-width="6" opacity="0.7"/>
+    <path d="M50 95 A45 45 0 0 1 95 140" stroke-width="5" opacity="0.5"/>
+  </g>
+  
+  <!-- Play button (scaled up) -->
+  <g fill="#FCFCF9">
+    <!-- Play button background circle -->
+    <circle cx="90" cy="90" r="40" fill="#FCFCF9" opacity="0.1"/>
+    <!-- Play triangle -->
+    <polygon points="75,65 75,115 115,90" fill="#FCFCF9"/>
+  </g>
+  
+  <!-- Smart recommendation star (scaled up with glow) -->
+  <g filter="url(#starGlow)">
+    <polygon points="135,40 140,55 155,55 143,65 148,80 135,70 122,80 127,65 115,55 130,55" 
+             fill="#FBBF24" stroke="#F59E0B" stroke-width="1"/>
+  </g>
+  
+  <!-- Additional accent dots -->
+  <g fill="#FBBF24" opacity="0.6">
+    <circle cx="145" cy="30" r="4"/>
+    <circle cx="155" cy="45" r="3"/>
+  </g>
+</svg>

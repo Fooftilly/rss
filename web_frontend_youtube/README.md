@@ -46,6 +46,7 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 ├── urls-youtube           # watched URLs (managed by sfeed_markread)
 ├── urls-bookmarks-youtube # bookmarked URLs (managed by this app)
 ├── urls-starred-youtube   # starred URLs (high preference videos)
+├── urls-disliked-youtube  # disliked URLs (negative preference videos)
 └── recommendations.json   # recommendation learning data
 ```
 
@@ -56,8 +57,9 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 - **Sort**: Use the dropdown to sort videos by date, title, channel, or get personalized recommendations
 - **Actions**: 
   - **Click thumbnail/title** to open video (high preference signal - full learning boost)
-  - **Click "Mark as Watched"** to just mark as seen (low preference signal - minimal learning)
   - **Click "Star"** to indicate high preference (3x learning boost)
+  - **Click "Dislike"** to decrease channel preference (negative learning signal)
+  - **Click "Mark as Watched"** to just mark as seen (low preference signal - minimal learning)
   - **Click "Bookmark"** to save videos for later
 - **Subscriptions**: Manage your YouTube channel subscriptions through the interface
 - **Recommendations**: View your recommendation stats and see how the system learns your preferences
@@ -78,6 +80,7 @@ Make sure you have sfeed installed and configured to generate YouTube feeds in t
 - **Channel Information**: Shows the YouTube channel name for each video
 - **Direct Video Links**: Opens videos directly on YouTube
 - **Subscription Management**: Add/remove YouTube channels through the web interface
+- **Custom Favicon**: Distinctive icon representing RSS feeds, video content, and smart recommendations
 
 ## Smart Recommendation System
 
@@ -101,10 +104,13 @@ The application includes an intelligent recommendation engine that learns from y
 Recommendation data is stored in `~/rss/recommendations.json` and includes:
 - Watched video history
 - Starred video history (high preference)
+- Disliked video history (negative preference)
 - Channel preference scores
 - Keyword preference scores
 - Time-based viewing patterns
 
-Starred videos are also tracked in `~/rss/urls-starred-youtube` for persistence.
+User preferences are also tracked in separate files:
+- `~/rss/urls-starred-youtube` for starred videos
+- `~/rss/urls-disliked-youtube` for disliked videos
 
 The system automatically updates as you interact with videos, requiring no manual configuration.

@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const thumbnail = video.thumbnail_url || 'https://placehold.co/1280x720/000000/FFFFFF?text=No+Thumbnail';
 
         return `
-        <div class="${cardClass}" data-url="${video.link}" data-watched="${video.watched}" data-bookmarked="${video.bookmarked}" data-starred="${video.starred}">
+        <div class="${cardClass}" data-url="${video.link}" data-watched="${video.watched}" data-bookmarked="${video.bookmarked}" data-starred="${video.starred}" data-disliked="${video.disliked}">
         <a href="${video.link}" target="_blank" rel="noopener noreferrer" class="video-thumbnail" onclick="handleThumbnailClick(event)">
         <img src="${thumbnail}" alt="${escapeHtml(video.title)}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/1280x720/000000/FFFFFF?text=Error';">
         </a>
@@ -243,9 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
         <span class="btn-text">${video.bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
         </button>
-        <button class="action-btn star-btn ${video.starred ? 'active' : ''}" onclick="toggleStar(event)">
+        <button class="action-btn star-btn ${video.starred ? 'active' : ''}" onclick="toggleStar(event)" title="${video.starred ? 'Remove star' : 'Star this video'}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon></svg>
-        <span class="btn-text">${video.starred ? 'Starred' : 'Star'}</span>
+        </button>
+        <button class="action-btn dislike-btn ${video.disliked ? 'active' : ''}" onclick="toggleDislike(event)" title="${video.disliked ? 'Remove dislike' : 'Dislike this video'}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path></svg>
         </button>
         <button class="action-btn watch-btn" onclick="toggleWatched(event)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -265,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             watched: JSON.parse(card.dataset.watched),
             bookmarked: JSON.parse(card.dataset.bookmarked),
             starred: JSON.parse(card.dataset.starred || 'false'),
+            disliked: JSON.parse(card.dataset.disliked || 'false'),
             title: card.querySelector('.video-title').textContent,
             author: card.querySelector('.video-channel').textContent,
             date: card.querySelector('.video-date').textContent,
@@ -551,6 +554,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    window.toggleDislike = async (event) => {
+        event.stopPropagation();
+        const button = event.currentTarget;
+        const card = button.closest('.video-card');
+        if (!card || button.disabled) return;
+
+        const videoUrl = card.dataset.url;
+        const isDisliked = JSON.parse(card.dataset.disliked || 'false');
+        const action = isDisliked ? 'undislike' : 'dislike';
+        const videoData = extractVideoDataFromCard(card);
+
+        button.disabled = true;
+
+        try {
+            const response = await fetch('/dislike', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: videoUrl,
+                    action,
+                    video_id: videoData.video_id,
+                    title: videoData.title,
+                    author: videoData.author
+                }),
+            });
+            const data = await response.json();
+            if (data.success) {
+                // Update all cards with the same URL in the current view
+                const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoUrl)}"]`);
+                allCardsWithSameUrl.forEach(cardElement => {
+                    cardElement.dataset.disliked = (action === 'dislike').toString();
+
+                    const cardButton = cardElement.querySelector('.dislike-btn');
+                    if (cardButton) {
+                        cardButton.classList.toggle('active', action === 'dislike');
+                        const btnText = cardButton.querySelector('.btn-text');
+                        if (btnText) {
+                            btnText.textContent = action === 'dislike' ? 'Disliked' : 'Dislike';
+                        }
+                    }
+                });
+
+                // Show notification
+                showNotification(
+                    action === 'dislike' ? 'Video disliked. Similar content will be shown less.' : 'Dislike removed.',
+                    action === 'dislike' ? 'warning' : 'success'
+                );
+            }
+        } catch (error) {
+            console.error('Error toggling dislike:', error);
+            showNotification('Failed to update dislike status.', 'error');
+        } finally {
+            button.disabled = false;
+        }
+    };
+
     window.toggleWatched = (event) => {
         event.stopPropagation();
         const card = event.currentTarget.closest('.video-card');
@@ -692,7 +751,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="stats-section">
                 <h3>Learning Progress</h3>
                 <p><strong>Total Videos Watched:</strong> ${stats.total_watched}</p>
-                <p><strong>Videos Starred:</strong> ${stats.total_starred || 0}</p>
+                <p><strong>Videos Starred:</strong> ${stats.total_starred || 0} <span style="color: var(--color-success);">(highest preference)</span></p>
+                <p><strong>Videos Disliked:</strong> ${stats.total_disliked || 0} <span style="color: var(--color-error);">(negative preference)</span></p>
                 <p><strong>Clicked to Watch:</strong> ${stats.clicked_to_watch || 0} <span style="color: var(--color-success);">(high preference)</span></p>
                 <p><strong>Marked as Watched:</strong> ${stats.marked_as_watched || 0} <span style="color: var(--color-text-secondary);">(low preference)</span></p>
                 <p><strong>Last Updated:</strong> ${lastUpdated}</p>
