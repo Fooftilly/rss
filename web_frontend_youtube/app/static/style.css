@@ -1139,4 +1139,23 @@ e button styling */
 
 .dislike-btn.active svg {
   fill: currentColor;
+}/
+* Discover tab styling */
+.nav-link[data-view="discover"] {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(33, 128, 141, 0.1) 100%);
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(135deg, #FBBF24, #21808D) 1;
+}
+
+.nav-link[data-view="discover"]:hover {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(33, 128, 141, 0.15) 100%);
+}
+
+.nav-link[data-view="discover"].active {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(33, 128, 141, 0.2) 100%);
+  border-left: 3px solid #FBBF24;
+}
+
+.nav-link[data-view="discover"] svg {
+  color: #FBBF24;
 }

@@ -5,7 +5,7 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 ## Features
 
 - **Clean, responsive interface** - Works on desktop and mobile
-- **Multiple views** - Unwatched, Watched, Bookmarked, and All videos
+- **Multiple views** - Unwatched, Watched, Bookmarked, All videos, and Discover (personalized recommendations)
 - **Search functionality** - Search through titles, channels, and content
 - **Sorting options** - Sort by date, title, channel, or personalized recommendations
 - **Mark as watched/unwatched** - Uses `sfeed_markread` to manage watched status
@@ -52,7 +52,8 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 
 ## Usage
 
-- **View Controls**: Switch between Unwatched, Watched, Bookmarked, and All videos
+- **View Controls**: Switch between Unwatched, Watched, Bookmarked, All videos, and Discover
+  - **Discover Tab**: Shows personalized recommendations for unstarred videos based on your preferences
 - **Search**: Type in the search box to filter videos by title, channel, or content
 - **Sort**: Use the dropdown to sort videos by date, title, channel, or get personalized recommendations
 - **Actions**: 

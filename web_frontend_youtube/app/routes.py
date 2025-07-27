@@ -40,6 +40,9 @@ def api_feeds():
             filtered_items = [item for item in all_items if item['watched']]
         elif view == 'bookmarked':
             filtered_items = [item for item in all_items if item['bookmarked']]
+        elif view == 'discover':
+            # Show recommended videos that haven't been starred
+            filtered_items = [item for item in all_items if not item.get('starred', False)]
         else:  # 'all' view
             filtered_items = all_items
 
@@ -52,7 +55,16 @@ def api_feeds():
 
         # --- 5. Apply sorting ---
         # The default sort is by timestamp descending (newest first).
-        if sort_by == 'date-asc':
+        # For discover view, always use recommendations unless explicitly overridden
+        if view == 'discover' and sort_by == 'date-desc':
+            # Default to recommendation sorting for discover view
+            try:
+                filtered_items = recommendation_engine.get_recommendations(filtered_items)
+            except Exception as e:
+                print(f"Error in recommendation sorting: {e}")
+                # Fallback to date sorting if recommendations fail
+                filtered_items.sort(key=lambda x: int(x['timestamp']) if str(x.get('timestamp')).isdigit() else 0, reverse=True)
+        elif sort_by == 'date-asc':
             filtered_items.sort(key=lambda x: int(x['timestamp']) if str(x.get('timestamp')).isdigit() else 0)
         elif sort_by == 'title-asc':
             filtered_items.sort(key=lambda x: x.get('title', '').lower())

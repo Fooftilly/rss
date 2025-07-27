@@ -193,7 +193,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (data.feeds.length === 0 && state.currentPage === 1) {
-                videoGrid.innerHTML = `<p style="text-align: center; color: var(--color-text-secondary); grid-column: 1 / -1;">No videos found for this view.</p>`;
+                let emptyMessage = 'No videos found for this view.';
+                if (state.activeView === 'discover') {
+                    emptyMessage = `
+                        <div style="text-align: center; padding: 2rem;">
+                            <h3 style="color: var(--color-text); margin-bottom: 1rem;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: text-bottom; margin-right: 8px; color: #FBBF24;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polygon points="10,8 16,12 10,16"></polygon>
+                                </svg>
+                                Start Discovering!
+                            </h3>
+                            <p style="color: var(--color-text-secondary); max-width: 400px; margin: 0 auto; line-height: 1.5;">
+                                Watch some videos and star the ones you love to train the recommendation system. 
+                                This tab will then show you personalized recommendations for content you haven't starred yet.
+                            </p>
+                        </div>
+                    `;
+                }
+                videoGrid.innerHTML = `<div style="grid-column: 1 / -1;">${emptyMessage}</div>`;
             } else {
                 data.feeds.forEach(video => {
                     videoGrid.insertAdjacentHTML('beforeend', getVideoCardHTML(video));
@@ -304,6 +322,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- UI & FILTER UPDATES ---
     function handleFilterChange(updateAction) {
         updateAction();
+
+        // Auto-set sort to recommended for discover view
+        if (state.activeView === 'discover' && state.sortBy === 'date-desc') {
+            state.sortBy = 'recommended';
+            sortSelect.value = 'recommended';
+        }
+
         fetchVideos(true);
         updateUI();
     }
