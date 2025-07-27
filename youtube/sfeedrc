@@ -17,6 +17,8 @@ feeds() {
 	feed '2 Artists EXPlain' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCyDBKvPXnc0WdsnQszOqmXA'
 	feed '2kliksphilip' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCEKJKJ3FO-9SFv5x5BzyxhQ'
 	feed '3Blue1Brown' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCYO_jab_esuFRV4b17AJtAw'
+	feed '12tone' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCTUtqcDkzw7bisadh6AOx5w'
+	feed '1000-Word Philosophy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCoo4-jptMPltwKcS4g5ptaQ'
 	feed 'A Well-Rested Dog' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5nlKFUNoskvV5XdW6PbgYw'
 	feed 'Accented Cinema' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCH_VqR5rFFhgjZmM31xA3Ag'
 	feed 'acollieralso' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC5E_q3-du7mrDZIyETFZ_Xw'
