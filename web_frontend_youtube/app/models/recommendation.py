@@ -227,7 +227,7 @@ class RecommendationEngine:
             'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we',
             'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her',
             'its', 'our', 'their', 'how', 'what', 'when', 'where', 'why', 'who', 
-            'about', 'than', 'not', 'part', 'all'
+            'about', 'than', 'not', 'part', 'all', 'can'
         }
         
         # Clean and split title
