@@ -7,7 +7,8 @@ from .utils import (
     parse_sfeedrc,
     update_sfeedrc
 )
-from .config import URLS_FILE, BOOKMARKS_FILE, ITEMS_PER_PAGE, SFEEDRC_FILE
+from .config import URLS_FILE, BOOKMARKS_FILE, STARRED_FILE, ITEMS_PER_PAGE, SFEEDRC_FILE
+from .models.recommendation import recommendation_engine
 
 bp = Blueprint('routes', __name__)
 
@@ -57,6 +58,14 @@ def api_feeds():
             filtered_items.sort(key=lambda x: x.get('title', '').lower())
         elif sort_by == 'author-asc':
             filtered_items.sort(key=lambda x: x.get('author', '').lower())
+        elif sort_by == 'recommended':
+            # Use recommendation engine to sort videos
+            try:
+                filtered_items = recommendation_engine.get_recommendations(filtered_items)
+            except Exception as e:
+                print(f"Error in recommendation sorting: {e}")
+                # Fallback to date sorting if recommendations fail
+                filtered_items.sort(key=lambda x: int(x['timestamp']) if str(x.get('timestamp')).isdigit() else 0, reverse=True)
         else:  # 'date-desc' is the default
             filtered_items.sort(key=lambda x: int(x['timestamp']) if str(x.get('timestamp')).isdigit() else 0, reverse=True)
 
@@ -99,6 +108,14 @@ def mark_watched():
         )
         stdout, stderr = process.communicate(input=formatted_url)
         if process.returncode == 0:
+            # Record interaction for recommendation engine
+            if action == 'read':
+                video_id = data.get('video_id')
+                title = data.get('title', '')
+                author = data.get('author', '')
+                if video_id and title and author:
+                    recommendation_engine.record_watch(video_id, title, author)
+            
             return jsonify({'success': True, 'action': action})
         else:
             return jsonify({'success': False, 'error': stderr}), 500
@@ -138,6 +155,126 @@ def bookmark():
         return jsonify({'success': True, 'action': action})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/api/track_interaction', methods=['POST'])
+def track_interaction():
+    """Track user interactions for recommendation learning"""
+    data = request.get_json()
+    interaction_type = data.get('type')  # 'skip', 'view', 'click'
+    video_id = data.get('video_id')
+    title = data.get('title', '')
+    author = data.get('author', '')
+    
+    if not all([interaction_type, video_id, title, author]):
+        return jsonify({'success': False, 'error': 'Missing required data'}), 400
+    
+    try:
+        if interaction_type == 'skip':
+            recommendation_engine.record_skip(video_id, title, author)
+        elif interaction_type == 'view':
+            recommendation_engine.record_watch(video_id, title, author)
+        
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/star_video', methods=['POST'])
+def star_video():
+    """Star or unstar a video for higher preference"""
+    data = request.get_json()
+    video_id = data.get('video_id')
+    title = data.get('title', '')
+    author = data.get('author', '')
+    action = data.get('action', 'star')  # 'star' or 'unstar'
+    
+    if not all([video_id, title, author]):
+        return jsonify({'success': False, 'error': 'Missing required data'}), 400
+    
+    try:
+        if action == 'star':
+            recommendation_engine.record_star(video_id, title, author)
+        elif action == 'unstar':
+            recommendation_engine.record_unstar(video_id, title, author)
+        
+        return jsonify({'success': True, 'action': action})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/api/recommendation_stats')
+def recommendation_stats():
+    """Get recommendation engine statistics"""
+    try:
+        print("Getting recommendation stats...")
+        stats = recommendation_engine.get_stats()
+        print(f"Stats retrieved: {stats}")
+        
+        # Ensure all values are JSON serializable
+        safe_stats = {}
+        for key, value in stats.items():
+            if isinstance(value, dict):
+                # Convert any non-string keys to strings and ensure values are serializable
+                safe_stats[key] = {str(k): float(v) if isinstance(v, (int, float)) else v 
+                                 for k, v in value.items()}
+            else:
+                safe_stats[key] = float(value) if isinstance(value, (int, float)) else value
+        
+        print(f"Safe stats: {safe_stats}")
+        return jsonify(safe_stats)
+    except Exception as e:
+        print(f"Error in recommendation_stats: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/api/health')
+def health_check():
+    """Simple health check endpoint"""
+    return jsonify({'status': 'ok', 'message': 'API is working'})
+
+@bp.route('/star', methods=['POST'])
+def star():
+    """Stars or unstars a video."""
+    data = request.get_json()
+    url = data.get('url')
+    action = data.get('action', 'star')  # 'star' or 'unstar'
+    video_id = data.get('video_id', '')
+    title = data.get('title', '')
+    author = data.get('author', '')
+    
+    if not url:
+        return jsonify({'success': False, 'error': 'No URL provided'}), 400
+
+    try:
+        # Ensure the starred file exists
+        if not os.path.exists(STARRED_FILE):
+            with open(STARRED_FILE, 'w') as f:
+                pass  # Create empty file
+
+        # Read all current starred videos
+        with open(STARRED_FILE, 'r') as f:
+            starred = set(line.strip() for line in f)
+
+        # Add or remove the URL
+        if action == 'star':
+            starred.add(url)
+            # Also record in recommendation engine
+            if video_id and title and author:
+                recommendation_engine.record_star(video_id, title, author)
+        elif action == 'unstar':
+            starred.discard(url)
+            # Also record in recommendation engine
+            if video_id and title and author:
+                recommendation_engine.record_unstar(video_id, title, author)
+
+        # Write the updated set back to the file
+        with open(STARRED_FILE, 'w') as f:
+            for starred_url in sorted(list(starred)):
+                f.write(starred_url + '\n')
+
+        return jsonify({'success': True, 'action': action})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 # --- Subscription Management Routes ---
 

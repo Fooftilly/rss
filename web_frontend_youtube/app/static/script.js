@@ -32,6 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const subUrlInput = document.getElementById('sub-url');
     const saveSubscriptionsBtn = document.getElementById('save-subscriptions-btn');
 
+    // Recommendation Elements
+    const recommendationStatsBtn = document.getElementById('recommendation-stats-btn');
+    const recommendationsModal = document.getElementById('recommendations-modal');
+    const closeRecommendationsModalBtn = document.getElementById('close-recommendations-modal-btn');
+    const recommendationStatsContent = document.getElementById('recommendation-stats-content');
+
     // Modals & Overlays
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingOverlayText = document.getElementById('loading-overlay-text');
@@ -115,6 +121,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- SKIP TRACKING ---
+    const videoViewTracker = new Map(); // Track which videos have been seen
+
+    function setupSkipTracking() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const card = entry.target;
+                const videoData = extractVideoDataFromCard(card);
+
+                if (entry.isIntersecting) {
+                    // Video came into view
+                    if (!videoViewTracker.has(videoData.video_id)) {
+                        videoViewTracker.set(videoData.video_id, {
+                            data: videoData,
+                            viewTime: Date.now(),
+                            tracked: false
+                        });
+                    }
+                } else {
+                    // Video left view - check if it should be marked as skipped
+                    const viewInfo = videoViewTracker.get(videoData.video_id);
+                    if (viewInfo && !viewInfo.tracked) {
+                        const viewDuration = Date.now() - viewInfo.viewTime;
+                        const isWatched = JSON.parse(card.dataset.watched);
+
+                        // If video was visible for >2 seconds but not clicked/watched, consider it skipped
+                        if (viewDuration > 2000 && !isWatched) {
+                            trackInteraction('skip', viewInfo.data);
+                            viewInfo.tracked = true;
+                        }
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Observe all video cards
+        document.querySelectorAll('.video-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        return observer;
+    }
+
+    let skipTrackingObserver = null;
+
     // --- DATA FETCHING & RENDERING ---
     async function fetchVideos(isNewSearch = false) {
         if (state.isLoading) return;
@@ -156,6 +207,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Auto-load more videos if we have fewer than 6 visible
             setTimeout(() => checkAndLoadMoreVideos(), 100);
+
+            // Setup skip tracking for new videos
+            if (skipTrackingObserver) {
+                skipTrackingObserver.disconnect();
+            }
+            skipTrackingObserver = setupSkipTracking();
         } catch (error) {
             console.error('Error fetching videos:', error);
             videoGrid.innerHTML = `<p style="text-align: center; color: var(--color-error); grid-column: 1 / -1;">Failed to load videos. Please try again later.</p>`;
@@ -171,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const thumbnail = video.thumbnail_url || 'https://placehold.co/1280x720/000000/FFFFFF?text=No+Thumbnail';
 
         return `
-        <div class="${cardClass}" data-url="${video.link}" data-watched="${video.watched}" data-bookmarked="${video.bookmarked}">
+        <div class="${cardClass}" data-url="${video.link}" data-watched="${video.watched}" data-bookmarked="${video.bookmarked}" data-starred="${video.starred}">
         <a href="${video.link}" target="_blank" rel="noopener noreferrer" class="video-thumbnail" onclick="handleThumbnailClick(event)">
         <img src="${thumbnail}" alt="${escapeHtml(video.title)}" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/1280x720/000000/FFFFFF?text=Error';">
         </a>
@@ -185,6 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="action-btn bookmark-btn ${video.bookmarked ? 'active' : ''}" onclick="toggleBookmark(event)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
         <span class="btn-text">${video.bookmarked ? 'Bookmarked' : 'Bookmark'}</span>
+        </button>
+        <button class="action-btn star-btn ${video.starred ? 'active' : ''}" onclick="toggleStar(event)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"></polygon></svg>
+        <span class="btn-text">${video.starred ? 'Starred' : 'Star'}</span>
         </button>
         <button class="action-btn watch-btn" onclick="toggleWatched(event)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
@@ -203,6 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link: card.dataset.url,
             watched: JSON.parse(card.dataset.watched),
             bookmarked: JSON.parse(card.dataset.bookmarked),
+            starred: JSON.parse(card.dataset.starred || 'false'),
             title: card.querySelector('.video-title').textContent,
             author: card.querySelector('.video-channel').textContent,
             date: card.querySelector('.video-date').textContent,
@@ -215,6 +277,12 @@ document.addEventListener('DOMContentLoaded', () => {
         videoData.forEach(video => {
             videoGrid.insertAdjacentHTML('beforeend', getVideoCardHTML(video));
         });
+
+        // Re-setup skip tracking
+        if (skipTrackingObserver) {
+            skipTrackingObserver.disconnect();
+        }
+        skipTrackingObserver = setupSkipTracking();
     }
 
     function extractVideoIdFromUrl(url) {
@@ -336,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             showNotification('Subscriptions saved successfully!', 'success');
             closeSubscriptionsModal();
-        } catch(error) {
+        } catch (error) {
             console.error('Error saving subscriptions:', error);
             showNotification(`Error: ${error.message}`, 'error', 5000);
         } finally {
@@ -345,10 +413,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- INTERACTION TRACKING ---
+    async function trackInteraction(type, videoData) {
+        try {
+            await fetch('/api/track_interaction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: type,
+                    video_id: videoData.video_id,
+                    title: videoData.title,
+                    author: videoData.author
+                })
+            });
+        } catch (error) {
+            console.error('Error tracking interaction:', error);
+        }
+    }
+
     // --- GLOBAL ACTION FUNCTIONS (attached via onclick) ---
     window.handleThumbnailClick = (event) => {
         const card = event.currentTarget.closest('.video-card');
         if (card && !JSON.parse(card.dataset.watched)) {
+            // Track that user clicked to view video
+            const videoData = extractVideoDataFromCard(card);
+            trackInteraction('view', videoData);
+
             performWatchAction(card, 'read');
         }
     };
@@ -376,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoUrl)}"]`);
                 allCardsWithSameUrl.forEach(cardElement => {
                     cardElement.dataset.bookmarked = (action === 'add').toString();
-                    
+
                     const cardButton = cardElement.querySelector('.bookmark-btn');
                     if (cardButton) {
                         cardButton.classList.toggle('active', action === 'add');
@@ -404,39 +494,110 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    window.toggleStar = async (event) => {
+        event.stopPropagation();
+        const button = event.currentTarget;
+        const card = button.closest('.video-card');
+        if (!card || button.disabled) return;
+
+        const videoUrl = card.dataset.url;
+        const isStarred = JSON.parse(card.dataset.starred);
+        const action = isStarred ? 'unstar' : 'star';
+        const videoData = extractVideoDataFromCard(card);
+
+        button.disabled = true;
+
+        try {
+            const response = await fetch('/star', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: videoUrl,
+                    action,
+                    video_id: videoData.video_id,
+                    title: videoData.title,
+                    author: videoData.author
+                }),
+            });
+            const data = await response.json();
+            if (data.success) {
+                // Update all cards with the same URL in the current view
+                const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoUrl)}"]`);
+                allCardsWithSameUrl.forEach(cardElement => {
+                    cardElement.dataset.starred = (action === 'star').toString();
+
+                    const cardButton = cardElement.querySelector('.star-btn');
+                    if (cardButton) {
+                        cardButton.classList.toggle('active', action === 'star');
+                        const btnText = cardButton.querySelector('.btn-text');
+                        if (btnText) {
+                            btnText.textContent = action === 'star' ? 'Starred' : 'Star';
+                        }
+                    }
+                });
+
+                // Show notification
+                showNotification(
+                    action === 'star' ? 'Video starred! This will improve recommendations.' : 'Video unstarred.',
+                    'success'
+                );
+            }
+        } catch (error) {
+            console.error('Error toggling star:', error);
+            showNotification('Failed to update star status.', 'error');
+        } finally {
+            button.disabled = false;
+        }
+    };
+
     window.toggleWatched = (event) => {
         event.stopPropagation();
         const card = event.currentTarget.closest('.video-card');
-        if(!card) return;
+        if (!card) return;
 
         const isWatched = JSON.parse(card.dataset.watched);
         const action = isWatched ? 'unread' : 'read';
         performWatchAction(card, action);
     };
 
+    function extractVideoDataFromCard(card) {
+        return {
+            video_id: extractVideoIdFromUrl(card.dataset.url),
+            title: card.querySelector('.video-title').textContent,
+            author: card.querySelector('.video-channel').textContent,
+            url: card.dataset.url
+        };
+    }
+
     async function performWatchAction(card, action) {
         const button = card.querySelector('.watch-btn');
         if (!card || (button && button.disabled)) return;
-        if(button) button.disabled = true;
+        if (button) button.disabled = true;
 
-        const videoUrl = card.dataset.url;
+        const videoData = extractVideoDataFromCard(card);
 
         try {
             const response = await fetch('/mark_watched', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ url: videoUrl, action }),
+                body: JSON.stringify({
+                    url: videoData.url,
+                    action,
+                    video_id: videoData.video_id,
+                    title: videoData.title,
+                    author: videoData.author
+                }),
             });
             const data = await response.json();
             if (data.success) {
                 const isNowWatched = (action === 'read');
-                
+
                 // Update all cards with the same URL in the current view
-                const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoUrl)}"]`);
+                const allCardsWithSameUrl = document.querySelectorAll(`[data-url="${CSS.escape(videoData.url)}"]`);
                 allCardsWithSameUrl.forEach(cardElement => {
                     cardElement.dataset.watched = isNowWatched.toString();
                     cardElement.classList.toggle('read', isNowWatched);
-                    
+
                     const cardButton = cardElement.querySelector('.watch-btn');
                     if (cardButton) {
                         const btnText = cardButton.querySelector('.btn-text');
@@ -459,7 +620,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error('Error toggling watched state:', error);
         } finally {
-            if(button) button.disabled = false;
+            if (button) button.disabled = false;
         }
     }
 
@@ -471,12 +632,108 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkAndLoadMoreVideos() {
         if (state.isLoading || !state.hasMore) return;
-        
+
         const visibleCount = countVisibleVideos();
         if (visibleCount < 6) {
             state.currentPage++;
             fetchVideos(false);
         }
+    }
+
+    // --- RECOMMENDATION STATS ---
+    async function openRecommendationsModal() {
+        try {
+            recommendationsModal.classList.add('visible');
+            recommendationStatsContent.innerHTML = '<p>Loading recommendation statistics...</p>';
+
+            const response = await fetch('/api/recommendation_stats', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const stats = await response.json();
+            if (stats.error) {
+                throw new Error(stats.error);
+            }
+
+            renderRecommendationStats(stats);
+        } catch (error) {
+            console.error('Error opening recommendations modal:', error);
+            recommendationStatsContent.innerHTML = `
+                <div class="stats-section">
+                    <h3>Statistics Temporarily Unavailable</h3>
+                    <p style="color: var(--color-error);">Could not load recommendation statistics: ${error.message}</p>
+                    <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">
+                        The recommendation system is still working in the background. 
+                        Try refreshing the page or check back later.
+                    </p>
+                    <button onclick="openRecommendationsModal()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--color-primary); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Try Again
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    function renderRecommendationStats(stats) {
+        const lastUpdated = stats.last_updated ? new Date(stats.last_updated * 1000).toLocaleString() : 'Never';
+
+        let html = `
+            <div class="stats-section">
+                <h3>Learning Progress</h3>
+                <p><strong>Videos Watched:</strong> ${stats.total_watched}</p>
+                <p><strong>Videos Starred:</strong> ${stats.total_starred || 0}</p>
+                <p><strong>Last Updated:</strong> ${lastUpdated}</p>
+            </div>
+        `;
+
+        if (Object.keys(stats.top_channels).length > 0) {
+            html += `
+                <div class="stats-section">
+                    <h3>Favorite Channels</h3>
+                    <ul>
+            `;
+            Object.entries(stats.top_channels).slice(0, 5).forEach(([channel, score]) => {
+                html += `<li>${escapeHtml(channel)} (${score.toFixed(1)})</li>`;
+            });
+            html += '</ul></div>';
+        }
+
+        if (Object.keys(stats.top_keywords).length > 0) {
+            html += `
+                <div class="stats-section">
+                    <h3>Preferred Topics</h3>
+                    <ul>
+            `;
+            Object.entries(stats.top_keywords).slice(0, 8).forEach(([keyword, score]) => {
+                html += `<li>${escapeHtml(keyword)} (${score.toFixed(1)})</li>`;
+            });
+            html += '</ul></div>';
+        }
+
+        if (stats.total_watched === 0) {
+            html += `
+                <div class="stats-section">
+                    <p style="color: var(--color-text-secondary); font-style: italic;">
+                        Start watching videos to see personalized recommendations! 
+                        The system learns from your viewing patterns to suggest content you'll enjoy.
+                    </p>
+                </div>
+            `;
+        }
+
+        recommendationStatsContent.innerHTML = html;
+    }
+
+    function closeRecommendationsModal() {
+        recommendationsModal.classList.remove('visible');
     }
 
     // --- EVENT LISTENERS ---
@@ -504,7 +761,7 @@ document.addEventListener('DOMContentLoaded', () => {
             videoGrid.classList.toggle('list-view', state.viewMode === 'list');
             viewButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            
+
             // Re-render existing video cards with the new view mode
             reRenderVideoCards();
         });
@@ -540,14 +797,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === subscriptionsModal) closeSubscriptionsModal();
     });
 
-        addSubscriptionForm.addEventListener('submit', handleAddSubscription);
-        saveSubscriptionsBtn.addEventListener('click', handleSaveChanges);
+    addSubscriptionForm.addEventListener('submit', handleAddSubscription);
+    saveSubscriptionsBtn.addEventListener('click', handleSaveChanges);
 
-        // --- INITIALIZATION ---
-        function initialize() {
-            updateUI();
-            fetchVideos(true);
-        }
+    // Recommendation Listeners
+    recommendationStatsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openRecommendationsModal();
+    });
 
-        initialize();
+    closeRecommendationsModalBtn.addEventListener('click', closeRecommendationsModal);
+    recommendationsModal.addEventListener('click', (e) => {
+        if (e.target === recommendationsModal) closeRecommendationsModal();
+    });
+
+    // --- INITIALIZATION ---
+    function initialize() {
+        updateUI();
+        fetchVideos(true);
+    }
+
+    initialize();
 });

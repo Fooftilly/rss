@@ -14,3 +14,6 @@ urls-bookmarks
 /web_frontend_news/app/__pycache__
 urls-bookmarks-news
 urls-bookmarks-youtube
+urls-starred-youtube
+recommendations.json
+/web_frontend_youtube/app/models/__pycache__

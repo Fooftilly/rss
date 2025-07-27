@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="app-container">
         <!-- Header -->
@@ -21,9 +23,14 @@
 
             <div class="header-center">
                 <div class="search-container">
-                    <input type="text" id="search-input" class="search-input" placeholder="Search videos or channels...">
+                    <input type="text" id="search-input" class="search-input"
+                        placeholder="Search videos or channels...">
                     <button class="search-btn" id="search-btn" aria-label="Search">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -53,6 +60,7 @@
                         <h3 class="nav-section-title">Manage</h3>
                         <ul class="nav-list">
                             <li><a href="#" class="nav-link" id="manage-subscriptions-btn">Subscriptions</a></li>
+                            <li><a href="#" class="nav-link" id="recommendation-stats-btn">Recommendations</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -65,15 +73,30 @@
                     <div class="content-controls">
                         <div class="view-controls">
                             <button class="view-btn active" data-view-mode="cards" aria-label="Card view">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
                             </button>
                             <button class="view-btn" data-view-mode="list" aria-label="List view">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                                </svg>
                             </button>
                         </div>
                         <select class="form-control" id="sort-select">
                             <option value="date-desc">Newest First</option>
                             <option value="date-asc">Oldest First</option>
+                            <option value="recommended">Recommended</option>
                             <option value="title-asc">Title A-Z</option>
                             <option value="author-asc">Channel A-Z</option>
                         </select>
@@ -87,7 +110,8 @@
                     <div id="loader" class="loading">
                         <div class="loading-spinner"></div>
                     </div>
-                    <p id="end-of-results" style="display: none; text-align: center; color: var(--color-text-secondary); margin-top: 2rem;">
+                    <p id="end-of-results"
+                        style="display: none; text-align: center; color: var(--color-text-secondary); margin-top: 2rem;">
                         You've reached the end.
                     </p>
                 </div>
@@ -135,18 +159,34 @@
                     </div>
                     <div class="form-group">
                         <label for="sub-url">Feed URL</label>
-                        <input type="url" id="sub-url" class="form-control" placeholder="https://www.youtube.com/feeds/videos.xml?channel_id=..." required>
-                         <p class="form-hint">Must be a valid YouTube feed URL.</p>
+                        <input type="url" id="sub-url" class="form-control"
+                            placeholder="https://www.youtube.com/feeds/videos.xml?channel_id=..." required>
+                        <p class="form-hint">Must be a valid YouTube feed URL.</p>
                     </div>
                     <button type="submit" class="btn btn--primary">Add Subscription</button>
                 </form>
             </div>
             <div class="modal-footer">
-                 <button id="save-subscriptions-btn" class="btn btn--primary">Save Changes</button>
+                <button id="save-subscriptions-btn" class="btn btn--primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="recommendations-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Recommendation Stats</h2>
+                <button id="close-recommendations-modal-btn" class="close-btn" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="recommendation-stats-content">
+                    <p>Loading recommendation statistics...</p>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
+
 </html>

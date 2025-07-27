@@ -1036,3 +1036,78 @@ display: flex;
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-secondary);
 }
+/* Recommendation Stats Styling */
+.stats-section {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.stats-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.stats-section h3 {
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 0.75rem;
+}
+
+.stats-section p {
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.stats-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stats-section li {
+  color: var(--color-text-secondary);
+  padding: 0.25rem 0;
+  font-size: var(--font-size-sm);
+}
+
+.stats-section strong {
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Recommendation indicator in sort dropdown */
+#sort-select option[value="recommended"] {
+  background: linear-gradient(90deg, var(--color-primary) 0%, transparent 100%);
+  color: var(--color-text);
+}/* 
+Star button styling */
+.star-btn {
+  color: var(--color-text-secondary);
+  transition: all 0.2s ease;
+}
+
+.star-btn:hover {
+  color: #fbbf24; /* Yellow color for star */
+  background-color: rgba(251, 191, 36, 0.1);
+}
+
+.star-btn.active {
+  color: #fbbf24; /* Yellow color for starred */
+  background-color: rgba(251, 191, 36, 0.15);
+}
+
+.star-btn.active:hover {
+  color: #f59e0b; /* Darker yellow on hover */
+  background-color: rgba(251, 191, 36, 0.2);
+}
+
+/* Star icon fill animation */
+.star-btn svg {
+  transition: fill 0.2s ease;
+}
+
+.star-btn.active svg {
+  fill: currentColor;
+}

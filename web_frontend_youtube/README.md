@@ -7,12 +7,13 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 - **Clean, responsive interface** - Works on desktop and mobile
 - **Multiple views** - Unwatched, Watched, Bookmarked, and All videos
 - **Search functionality** - Search through titles, channels, and content
-- **Sorting options** - Sort by date, title, or channel
+- **Sorting options** - Sort by date, title, channel, or personalized recommendations
 - **Mark as watched/unwatched** - Uses `sfeed_markread` to manage watched status
 - **Bookmark videos** - Custom bookmarking feature for saving videos
 - **YouTube thumbnails** - Shows video thumbnails for better browsing
 - **Pagination** - Efficient loading of large feeds
 - **Subscription management** - Add/remove YouTube channel subscriptions
+- **Smart Recommendations** - AI-powered recommendations that learn from your viewing patterns
 
 ## Setup
 
@@ -43,19 +44,23 @@ A modern web interface for watching YouTube videos from RSS feeds using sfeed.
 │   ├── feeds/              # sfeed output files
 │   └── sfeedrc            # YouTube subscriptions
 ├── urls-youtube           # watched URLs (managed by sfeed_markread)
-└── urls-bookmarks-youtube # bookmarked URLs (managed by this app)
+├── urls-bookmarks-youtube # bookmarked URLs (managed by this app)
+├── urls-starred-youtube   # starred URLs (high preference videos)
+└── recommendations.json   # recommendation learning data
 ```
 
 ## Usage
 
 - **View Controls**: Switch between Unwatched, Watched, Bookmarked, and All videos
 - **Search**: Type in the search box to filter videos by title, channel, or content
-- **Sort**: Use the dropdown to sort videos by date, title, or channel
+- **Sort**: Use the dropdown to sort videos by date, title, channel, or get personalized recommendations
 - **Actions**: 
   - Click "Mark as Watched/Unwatched" to toggle watched status
   - Click "Bookmark/Remove Bookmark" to save videos for later
+  - Click "Star/Unstar" to indicate high preference (improves recommendations)
   - Click "Open Video" to open in a new tab (automatically marks as watched)
 - **Subscriptions**: Manage your YouTube channel subscriptions through the interface
+- **Recommendations**: View your recommendation stats and see how the system learns your preferences
 
 ## Integration with sfeed
 
@@ -73,3 +78,32 @@ Make sure you have sfeed installed and configured to generate YouTube feeds in t
 - **Channel Information**: Shows the YouTube channel name for each video
 - **Direct Video Links**: Opens videos directly on YouTube
 - **Subscription Management**: Add/remove YouTube channels through the web interface
+
+## Smart Recommendation System
+
+The application includes an intelligent recommendation engine that learns from your viewing behavior:
+
+### How It Works
+- **Channel Preferences**: Learns which channels you watch most frequently
+- **Content Analysis**: Analyzes video titles to understand your topic preferences
+- **Viewing Patterns**: Tracks when you typically watch videos
+- **Skip Detection**: Notices when you skip videos to avoid similar content
+
+### Features
+- **Personalized Sorting**: Select "Recommended" from the sort dropdown to see videos ranked by your preferences
+- **Star System**: Click the star button on videos you really like for 3x stronger preference learning
+- **Learning Over Time**: The more you use the app, the better the recommendations become
+- **Privacy-First**: All learning data is stored locally on your machine
+- **Statistics View**: Check your recommendation stats to see what the system has learned
+
+### Data Storage
+Recommendation data is stored in `~/rss/recommendations.json` and includes:
+- Watched video history
+- Starred video history (high preference)
+- Channel preference scores
+- Keyword preference scores
+- Time-based viewing patterns
+
+Starred videos are also tracked in `~/rss/urls-starred-youtube` for persistence.
+
+The system automatically updates as you interact with videos, requiring no manual configuration.
