@@ -240,16 +240,18 @@ class RecommendationEngine:
         """Calculate recommendation score for a video"""
         score = 0.0
         
-        # Channel preference score (40% weight)
+        # Channel preference score (20% weight, reduced from 40%)
         channel_score = self.user_data['channel_scores'].get(video['author'], 0)
-        score += channel_score * 0.4
+        # Apply diminishing returns to prevent single channels from dominating
+        normalized_channel_score = channel_score / (1 + abs(channel_score) * 0.1)
+        score += normalized_channel_score * 0.2
         
-        # Keyword matching score (30% weight)
+        # Keyword matching score (50% weight, increased from 30%)
         keywords = self._extract_keywords(video['title'])
         keyword_score = sum(self.user_data['keyword_scores'].get(kw, 0) for kw in keywords)
-        score += keyword_score * 0.3
+        score += keyword_score * 0.5
         
-        # Recency bonus (20% weight) - newer videos get slight boost
+        # Recency bonus (20% weight, same as before)
         try:
             video_age_days = (time.time() - int(video['timestamp'])) / (24 * 3600)
             recency_score = max(0, 1 - (video_age_days / 30))  # Decay over 30 days
@@ -257,7 +259,7 @@ class RecommendationEngine:
         except (ValueError, TypeError):
             pass
         
-        # Time pattern bonus (10% weight) - videos posted at user's active hours
+        # Time pattern bonus (10% weight, same as before)
         try:
             video_hour = datetime.fromtimestamp(int(video['timestamp'])).hour
             time_score = self.user_data['time_patterns'].get(video_hour, 0) / 10.0
