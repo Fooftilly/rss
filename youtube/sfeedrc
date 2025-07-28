@@ -384,6 +384,7 @@ feeds() {
 	feed 'Nerdwriter1' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCJkMlOu7faDgqh4PfzbpLdg'
 	feed 'Netflix' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCWOA1ZGywLbqmigxE4Qlvuw'
 	feed 'New Work in Philosophy' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCin6KEiYyQ9RljB6SvzkMaQ'
+	feed 'Nic Barker' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCz-yrxeZYIYdpEZgHGvIydA'
 	feed 'Nicco Loves Linux' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCONH73CdRXUjlh3-DdLGCPw'
 	feed 'Nick Robinson (Babylonian)' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCOuddH5GyBXp-_tv_ASdp_A'
 	feed 'NileRed' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCFhXFikryT4aFcLkLw2LBLA'
