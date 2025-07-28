@@ -96,12 +96,10 @@ class RecommendationEngine:
             # Full positive reinforcement for actually clicking to watch
             channel_boost = 1.0
             keyword_boost = 0.5
-            time_boost = 1
         else:  # 'marked'
             # Lower reinforcement for just marking as watched
             channel_boost = 0.3
             keyword_boost = 0.15
-            time_boost = 0
         
         # Update channel preference
         self.user_data['channel_scores'][author] += channel_boost
@@ -111,10 +109,7 @@ class RecommendationEngine:
         for keyword in keywords:
             self.user_data['keyword_scores'][keyword] += keyword_boost
         
-        # Update time pattern (only for clicked videos)
-        if time_boost > 0:
-            hour = datetime.fromtimestamp(timestamp).hour
-            self.user_data['time_patterns'][hour] += time_boost
+        # Time pattern tracking removed as requested
         
         self._save_user_data()
     
@@ -141,9 +136,7 @@ class RecommendationEngine:
         for keyword in keywords:
             self.user_data['keyword_scores'][keyword] += 1.5  # Triple the normal score
         
-        # Update time pattern with higher weight
-        hour = datetime.fromtimestamp(timestamp).hour
-        self.user_data['time_patterns'][hour] += 2
+        # Time pattern tracking removed as requested
         
         self._save_user_data()
     
@@ -240,30 +233,22 @@ class RecommendationEngine:
         """Calculate recommendation score for a video"""
         score = 0.0
         
-        # Channel preference score (20% weight, reduced from 40%)
+        # Channel preference score (5% weight, reduced from 20%)
         channel_score = self.user_data['channel_scores'].get(video['author'], 0)
         # Apply diminishing returns to prevent single channels from dominating
         normalized_channel_score = channel_score / (1 + abs(channel_score) * 0.1)
-        score += normalized_channel_score * 0.2
+        score += normalized_channel_score * 0.05
         
-        # Keyword matching score (50% weight, increased from 30%)
+        # Keyword matching score (65% weight, increased from 50%)
         keywords = self._extract_keywords(video['title'])
         keyword_score = sum(self.user_data['keyword_scores'].get(kw, 0) for kw in keywords)
-        score += keyword_score * 0.5
+        score += keyword_score * 0.65
         
-        # Recency bonus (20% weight, same as before)
+        # Recency bonus (30% weight, increased from 20%)
         try:
             video_age_days = (time.time() - int(video['timestamp'])) / (24 * 3600)
             recency_score = max(0, 1 - (video_age_days / 30))  # Decay over 30 days
-            score += recency_score * 0.2
-        except (ValueError, TypeError):
-            pass
-        
-        # Time pattern bonus (10% weight, same as before)
-        try:
-            video_hour = datetime.fromtimestamp(int(video['timestamp'])).hour
-            time_score = self.user_data['time_patterns'].get(video_hour, 0) / 10.0
-            score += min(time_score, 1.0) * 0.1
+            score += recency_score * 0.30
         except (ValueError, TypeError):
             pass
         
