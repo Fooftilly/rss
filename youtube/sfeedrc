@@ -85,6 +85,7 @@ feeds() {
 	feed 'Big Joel' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCaN8DZdc8EHo5y1LsQWMiig'
 	feed 'BigTime' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCxpbaAGBv4zrRJx_AjGdVLA'
 	feed 'Bill'\''s Box Of Sound' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCPX034-KOaKXsvMaVu64B2A'
+	feed 'Bizarre Beasts' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC9Lp_AA5M2cMGrlvnnIns-g'
 	feed 'Bliss Foster' 'https://www.youtube.com/feeds/videos.xml?channel_id=UC1OR9yjgsvoFK3xxhCs-19Q'
 	feed 'Blythe' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCgqR3H6UG7KZ58lRq-IlK_A'
 	feed 'Bobby Fingers' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCXKCiTquPMavBqgXgrM9mBg'
