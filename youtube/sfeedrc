@@ -157,7 +157,6 @@ feeds() {
 	feed 'Dr Geoff Lindsey' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCtFuCBKQTItHCwfHRP9LIjQ'
 	feed 'Dr. Fatima' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCUNtD-UN-fQHHteLHK9HgvQ'
 	feed 'Dronemf S.' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCAzNREQfjp1UyM9LHZPjFjg'
-	feed 'Dry Creek Wrangler School' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCCU0HzTA9ddqOgtuV-TJ9yw'
 	feed 'Easy French' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCoUWq2QawqdC3-nRXKk-JUw'
 	feed 'ECM Records' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCa1tsAqPfGsmOydOiDeIywQ'
 	feed 'Eco Gecko' 'https://www.youtube.com/feeds/videos.xml?channel_id=UCJZV6sai-juDs4zAbAMVhfA'
