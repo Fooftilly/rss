@@ -7,6 +7,14 @@ from datetime import datetime, timedelta
 from contextlib import contextmanager
 from ..config import RSS_BASE_DIR
 
+# Import neural network components
+try:
+    from .keyword_neural_net import NeuralRecommendationEngine
+    NEURAL_NET_AVAILABLE = True
+except ImportError as e:
+    print(f"Neural network not available: {e}")
+    NEURAL_NET_AVAILABLE = False
+
 class RecommendationEngine:
     """
     SQLite-based recommendation engine that learns user preferences based on:
@@ -20,6 +28,16 @@ class RecommendationEngine:
         self.db_path = os.path.join(RSS_BASE_DIR, "recommendations.db")
         self._lock = threading.RLock()  # Thread-safe operations
         self._init_database()
+        
+        # Initialize neural network engine if available
+        self.neural_engine = None
+        if NEURAL_NET_AVAILABLE:
+            try:
+                self.neural_engine = NeuralRecommendationEngine(self.db_path)
+                print("✅ Neural network engine initialized")
+            except Exception as e:
+                print(f"⚠️  Neural network initialization failed: {e}")
+                self.neural_engine = None
     
     def _init_database(self):
         """Initialize the database schema if it doesn't exist"""
@@ -354,23 +372,25 @@ class RecommendationEngine:
         return keywords[:10]  # Limit to top 10 keywords
     
     def calculate_video_score(self, video):
-        """Calculate recommendation score for a video"""
+        """Calculate recommendation score for a video using both traditional and neural methods"""
         with self._get_connection() as conn:
             cursor = conn.cursor()
             
             score = 0.0
             video_id = video.get('video_id')
             
-            # Channel preference score (5% weight)
+            # Traditional scoring components
+            
+            # Channel preference score (3% weight, reduced to make room for neural)
             cursor.execute("SELECT score FROM channel_scores WHERE channel_name = ?", (video['author'],))
             row = cursor.fetchone()
             if row:
                 channel_score = row[0]
                 # Apply diminishing returns
                 normalized_channel_score = channel_score / (1 + abs(channel_score) * 0.1)
-                score += normalized_channel_score * 0.05
+                score += normalized_channel_score * 0.03
             
-            # Keyword matching score (65% weight)
+            # Traditional keyword matching score (40% weight, reduced)
             keywords = self._extract_keywords(video['title'])
             if keywords:
                 cursor.execute(f"""
@@ -380,13 +400,21 @@ class RecommendationEngine:
                 row = cursor.fetchone()
                 if row and row[0]:
                     keyword_score = row[0]
-                    score += keyword_score * 0.65
+                    score += keyword_score * 0.40
             
-            # Recency bonus (30% weight)
+            # Neural network score (35% weight - NEW!)
+            if self.neural_engine:
+                try:
+                    neural_score = self.neural_engine.get_neural_score(video['title'])
+                    score += neural_score * 0.35
+                except Exception as e:
+                    print(f"Neural scoring failed: {e}")
+            
+            # Recency bonus (22% weight, slightly reduced)
             try:
                 video_age_days = (time.time() - int(video['timestamp'])) / (24 * 3600)
                 recency_score = max(0, 1 - (video_age_days / 30))  # Decay over 30 days
-                score += recency_score * 0.30
+                score += recency_score * 0.22
             except (ValueError, TypeError):
                 pass
             
@@ -543,6 +571,29 @@ class RecommendationEngine:
                 except sqlite3.Error as e:
                     conn.rollback()
                     raise e
+    
+    def train_neural_network(self, force_retrain=False):
+        """Train the neural network model"""
+        if not self.neural_engine:
+            return False
+        
+        return self.neural_engine.train_model(force_retrain=force_retrain)
+    
+    def get_neural_insights(self, title):
+        """Get neural network insights for a video title"""
+        if not self.neural_engine:
+            return {}
+        
+        return self.neural_engine.get_keyword_insights(title)
+    
+    def get_neural_stats(self):
+        """Get neural network model statistics"""
+        if not self.neural_engine:
+            return {'neural_available': False}
+        
+        stats = self.neural_engine.get_model_stats()
+        stats['neural_available'] = True
+        return stats
 
 # Global instance
 recommendation_engine = RecommendationEngine()

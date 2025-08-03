@@ -219,6 +219,11 @@ def recommendation_stats():
     try:
         print("Getting recommendation stats...")
         stats = recommendation_engine.get_stats()
+        
+        # Add neural network stats
+        neural_stats = recommendation_engine.get_neural_stats()
+        stats.update(neural_stats)
+        
         print(f"Stats retrieved: {stats}")
         
         # Ensure all values are JSON serializable
@@ -237,6 +242,67 @@ def recommendation_stats():
         print(f"Error in recommendation_stats: {e}")
         import traceback
         traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/api/neural/train', methods=['POST'])
+def train_neural_network():
+    """Train the neural network model"""
+    try:
+        data = request.get_json() or {}
+        force_retrain = data.get('force_retrain', False)
+        
+        success = recommendation_engine.train_neural_network(force_retrain=force_retrain)
+        
+        if success:
+            stats = recommendation_engine.get_neural_stats()
+            return jsonify({
+                'success': True,
+                'message': 'Neural network training completed',
+                'stats': stats
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Neural network training failed'
+            }), 500
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@bp.route('/api/neural/insights', methods=['POST'])
+def get_neural_insights():
+    """Get neural network insights for a video title"""
+    try:
+        data = request.get_json()
+        title = data.get('title', '')
+        
+        if not title:
+            return jsonify({'error': 'Title is required'}), 400
+        
+        insights = recommendation_engine.get_neural_insights(title)
+        
+        return jsonify({
+            'success': True,
+            'title': title,
+            'insights': insights
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@bp.route('/api/neural/stats')
+def neural_stats():
+    """Get neural network model statistics"""
+    try:
+        stats = recommendation_engine.get_neural_stats()
+        return jsonify(stats)
+    except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 @bp.route('/api/health')

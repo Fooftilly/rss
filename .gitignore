@@ -19,3 +19,4 @@ recommendations.json
 /web_frontend_youtube/app/models/__pycache__
 urls-disliked-youtube
 recommendations.db
+keyword_model.pkl
