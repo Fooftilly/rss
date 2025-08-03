@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#grad1)" stroke="#fff" stroke-width="2"/>
+  
+  <!-- Newspaper icon -->
+  <rect x="25" y="20" width="50" height="60" rx="3" fill="#fff" opacity="0.9"/>
+  
+  <!-- Header line -->
+  <rect x="30" y="28" width="40" height="3" fill="#667eea"/>
+  
+  <!-- Article lines -->
+  <rect x="30" y="36" width="25" height="2" fill="#666"/>
+  <rect x="30" y="41" width="35" height="2" fill="#666"/>
+  <rect x="30" y="46" width="30" height="2" fill="#666"/>
+  <rect x="30" y="51" width="38" height="2" fill="#666"/>
+  
+  <!-- Second column -->
+  <rect x="30" y="58" width="20" height="2" fill="#666"/>
+  <rect x="30" y="63" width="32" height="2" fill="#666"/>
+  <rect x="30" y="68" width="28" height="2" fill="#666"/>
+  
+  <!-- AI indicator -->
+  <circle cx="65" cy="25" r="8" fill="#4ecdc4"/>
+  <text x="65" y="29" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="#fff">AI</text>
+</svg>

@@ -8,7 +8,7 @@ from .utils import (
     update_sfeedrc
 )
 from .config import URLS_FILE, BOOKMARKS_FILE, STARRED_FILE, DISLIKED_FILE, ITEMS_PER_PAGE, SFEEDRC_FILE
-from .models.recommendation_sqlite import recommendation_engine
+from .models.unified_adapter import recommendation_engine
 
 bp = Blueprint('routes', __name__)
 

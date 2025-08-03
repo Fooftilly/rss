@@ -20,3 +20,6 @@ recommendations.json
 urls-disliked-youtube
 recommendations.db
 keyword_model.pkl
+/shared_models/__pycache__
+urls-disliked-news
+urls-starred-news

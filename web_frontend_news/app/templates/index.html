@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Feed Reader - Unified AI</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #4ecdc4;
+            --success-color: #4CAF50;
+            --warning-color: #ff9800;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border-color: #e9ecef;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, #ff6b6b, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            padding: 0.75rem 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            font-size: 0.95rem;
+            min-width: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--success-color), #45a049);
+            color: white;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar h3 i {
+            font-size: 1.1rem;
+        }
+
+        .view-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .view-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: left;
+            transition: var(--transition);
+            background: var(--light-bg);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .view-btn:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .view-btn:hover::before {
+            transform: scaleY(1);
+        }
+
+        .view-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .view-btn.active::before {
+            transform: scaleY(1);
+            background: rgba(255, 255, 255, 0.3);
+            width: 100%;
+        }
+
+        .sort-controls {
+            margin-bottom: 2rem;
+        }
+
+        .sort-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            background: var(--white);
+            color: var(--text-primary);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .stats-section {
+            background: linear-gradient(135deg, var(--light-bg), #e9ecef);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .stats-section h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .content-area {
+            flex: 1;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .content-header {
+            padding: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--white), var(--light-bg));
+        }
+
+        .content-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .content-title i {
+            color: var(--primary-color);
+        }
+
+        .content-info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .article-list {
+            padding: 0;
+        }
+
+        .article-item {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .article-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .article-item:hover {
+            background: linear-gradient(135deg, var(--light-bg), rgba(102, 126, 234, 0.05));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .article-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .article-item.read {
+            opacity: 0.6;
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .article-item.read::before {
+            background: var(--text-muted);
+        }
+
+        .article-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .article-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            flex: 1;
+            margin-right: 1rem;
+            line-height: 1.4;
+            transition: var(--transition);
+        }
+
+        .article-title:hover {
+            color: var(--primary-color);
+            text-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .action-btn.star {
+            background: linear-gradient(135deg, #ffc107, #ff9800);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+        }
+
+        .action-btn.star.active {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .action-btn.dislike {
+            background: linear-gradient(135deg, var(--danger-color), #c82333);
+            color: white;
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+        }
+
+        .action-btn.dislike.active {
+            background: linear-gradient(135deg, #c82333, #a71e2a);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(200, 35, 51, 0.4);
+        }
+
+        .action-btn.bookmark {
+            background: linear-gradient(135deg, var(--info-color), #138496);
+            color: white;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+        }
+
+        .action-btn.bookmark.active {
+            background: linear-gradient(135deg, #138496, #0f6674);
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(19, 132, 150, 0.4);
+        }
+
+        .action-btn.read {
+            background: linear-gradient(135deg, #6c757d, #545b62);
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            align-items: center;
+        }
+
+        .article-source {
+            font-weight: 600;
+            color: var(--primary-color);
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-source i {
+            font-size: 0.8rem;
+        }
+
+        .article-date {
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-date i {
+            font-size: 0.8rem;
+        }
+
+        .article-preview {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 0.5rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .pagination {
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+
+        .pagination-info {
+            margin-bottom: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 2rem;
+            color: #dc3545;
+            background-color: #f8d7da;
+            border-radius: 5px;
+            margin: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+
+            .view-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .header-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .controls {
+                justify-content: center;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .article-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .article-actions {
+                margin-top: 0.5rem;
+                justify-content: flex-start;
+            }
+        }
+
+        .discover-badge {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+
+        .cross-platform-indicator {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.75rem;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-hover);
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            background: var(--light-bg);
+        }
+
+        /* Feed Management Styles */
+        .feed-list {
+            margin-bottom: 2rem;
+        }
+
+        .feed-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .feed-item:hover {
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+
+        .feed-info {
+            flex: 1;
+        }
+
+        .feed-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .feed-url {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+        }
+
+        .feed-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+            border-radius: var(--border-radius);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), #c82333);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .add-feed-form {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Loading States */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Article processing states */
+        .article-item.processing {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .article-item.removing {
+            transform: translateX(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Success feedback */
+        .success-message {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--success-color), #45a049);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            z-index: 1500;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-newspaper"></i>
+                    News Feed Reader
+                    <span class="cross-platform-indicator">Unified AI</span>
+                </div>
+                <div class="controls">
+                    <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search articles...">
+                    <button class="btn btn-secondary" onclick="showSubscriptions()">
+                        <i class="fas fa-cog"></i>
+                        Manage Feeds
+                    </button>
+                    <button class="btn btn-secondary" onclick="showStats()">
+                        <i class="fas fa-chart-bar"></i>
+                        Stats
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="sidebar">
+                <h3><i class="fas fa-eye"></i> Views</h3>
+                <div class="view-buttons">
+                    <button class="view-btn active" data-view="unread">
+                        <i class="fas fa-file-alt"></i>
+                        Unread
+                    </button>
+                    <button class="view-btn" data-view="read">
+                        <i class="fas fa-check-circle"></i>
+                        Read
+                    </button>
+                    <button class="view-btn" data-view="bookmarked">
+                        <i class="fas fa-bookmark"></i>
+                        Bookmarked
+                    </button>
+                    <button class="view-btn" data-view="discover">
+                        <i class="fas fa-magic"></i>
+                        Discover
+                        <span class="discover-badge">AI</span>
+                    </button>
+                    <button class="view-btn" data-view="all">
+                        <i class="fas fa-list"></i>
+                        All Articles
+                    </button>
+                </div>
+
+                <div class="sort-controls">
+                    <h3><i class="fas fa-sort"></i> Sort By</h3>
+                    <select class="sort-select" id="sortSelect">
+                        <option value="date-desc">📅 Newest First</option>
+                        <option value="date-asc">📅 Oldest First</option>
+                        <option value="title-asc">🔤 Title A-Z</option>
+                        <option value="author-asc">🏢 Source A-Z</option>
+                        <option value="recommended">🤖 AI Recommended</option>
+                    </select>
+                </div>
+
+                <div class="stats-section" id="quickStats">
+                    <h4><i class="fas fa-chart-pie"></i> Quick Stats</h4>
+                    <div class="stat-item">
+                        <span><i class="fas fa-eye"></i> Total Read:</span>
+                        <span class="stat-value" id="totalRead">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span><i class="fas fa-star"></i> Starred:</span>
+                        <span class="stat-value" id="totalStarred">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span><i class="fas fa-link"></i> Cross-Platform:</span>
+                        <span class="stat-value" id="crossPlatform">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="content-header">
+                    <div class="content-title" id="contentTitle">
+                        <i class="fas fa-file-alt"></i>
+                        Unread Articles
+                    </div>
+                    <div class="content-info" id="contentInfo">Loading...</div>
+                </div>
+
+                <div id="articleList" class="article-list">
+                    <div class="loading">Loading articles...</div>
+                </div>
+
+                <div class="pagination" id="pagination" style="display: none;">
+                    <div class="pagination-info" id="paginationInfo"></div>
+                    <div class="pagination-buttons">
+                        <button class="btn btn-secondary" id="prevBtn" onclick="changePage(-1)">Previous</button>
+                        <button class="btn btn-secondary" id="nextBtn" onclick="changePage(1)">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feed Management Modal -->
+    <div id="feedModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-rss"></i>
+                    Manage News Feeds
+                </div>
+                <button class="modal-close" onclick="closeFeedModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="add-feed-form">
+                    <h4><i class="fas fa-plus-circle"></i> Add New Feed</h4>
+                    <div class="form-group">
+                        <label class="form-label" for="feedName">Feed Name</label>
+                        <input type="text" id="feedName" class="form-input" placeholder="e.g., Tech News Daily">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="feedUrl">RSS URL</label>
+                        <input type="url" id="feedUrl" class="form-input" placeholder="https://example.com/rss.xml">
+                    </div>
+                    <button class="btn btn-primary" onclick="addFeed()">
+                        <i class="fas fa-plus"></i>
+                        Add Feed
+                    </button>
+                </div>
+
+                <div class="feed-list">
+                    <h4><i class="fas fa-list"></i> Current Feeds</h4>
+                    <div id="feedListContainer">
+                        <div class="loading">Loading feeds...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeFeedModal()">
+                    <i class="fas fa-times"></i>
+                    Close
+                </button>
+                <button class="btn btn-primary" onclick="saveFeedChanges()">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Recommendation Statistics
+                </div>
+                <button class="modal-close" onclick="closeStatsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="statsContent">
+                    <div class="loading">Loading statistics...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeStatsModal()">
+                    <i class="fas fa-times"></i>
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentView = 'unread';
+        let currentPage = 1;
+        let currentSearch = '';
+        let currentSort = 'date-desc';
+        let totalPages = 1;
+        let isLoading = false;
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function () {
+            setupEventListeners();
+            loadArticles();
+            loadQuickStats();
+        });
+
+        function setupEventListeners() {
+            // View buttons
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const view = this.dataset.view;
+                    switchView(view);
+                });
+            });
+
+            // Search box with optimized debouncing
+            const searchBox = document.getElementById('searchBox');
+            let searchTimeout;
+            searchBox.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                const query = this.value;
+
+                // Immediate search for empty query, delayed for others
+                if (query === '') {
+                    currentSearch = query;
+                    currentPage = 1;
+                    loadArticles();
+                } else {
+                    searchTimeout = setTimeout(() => {
+                        currentSearch = query;
+                        currentPage = 1;
+                        loadArticles();
+                    }, 500); // Increased delay to reduce API calls
+                }
+            });
+
+            // Sort select
+            document.getElementById('sortSelect').addEventListener('change', function () {
+                currentSort = this.value;
+                currentPage = 1;
+                loadArticles();
+            });
+        }
+
+        function switchView(view) {
+            currentView = view;
+            currentPage = 1;
+
+            // Update active button
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-view="${view}"]`).classList.add('active');
+
+            // Update content title
+            const titles = {
+                'unread': { text: 'Unread Articles', icon: 'fas fa-file-alt' },
+                'read': { text: 'Read Articles', icon: 'fas fa-check-circle' },
+                'bookmarked': { text: 'Bookmarked Articles', icon: 'fas fa-bookmark' },
+                'discover': { text: 'Discover - AI Recommended', icon: 'fas fa-magic' },
+                'all': { text: 'All Articles', icon: 'fas fa-list' }
+            };
+            const titleInfo = titles[view];
+            document.getElementById('contentTitle').innerHTML = `<i class="${titleInfo.icon}"></i> ${titleInfo.text}`;
+
+            loadArticles();
+        }
+
+        async function loadArticles() {
+            if (isLoading) return;
+            isLoading = true;
+
+            // Show loading indicator
+            const articleList = document.getElementById('articleList');
+            if (currentPage === 1) {
+                articleList.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading articles...</div>';
+            }
+
+            try {
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    view: currentView,
+                    search: currentSearch,
+                    sort_by: currentSort
+                    // Removed cache busting for better performance
+                });
+
+                const response = await fetch(`/api/feeds?${params}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                displayArticles(data.feeds);
+                updatePagination(data);
+                updateContentInfo(data);
+
+            } catch (error) {
+                console.error('Error loading articles:', error);
+                document.getElementById('articleList').innerHTML =
+                    `<div class="error">Error loading articles: ${error.message}</div>`;
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function displayArticles(articles) {
+            const articleList = document.getElementById('articleList');
+
+            if (articles.length === 0) {
+                articleList.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No articles found</h3>
+                        <p>Try adjusting your search or view filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const articlesHtml = articles.map(article => `
+                <div class="article-item ${article.read ? 'read' : ''}">
+                    <div class="article-header">
+                        <a href="${article.url}" class="article-title" 
+                           onclick="trackInteraction('click', '${article.article_id}', '${escapeHtml(article.title)}', '${escapeHtml(article.author)}'); markAsRead('${article.url}', '${article.article_id}', '${escapeHtml(article.title)}', '${escapeHtml(article.author)}', 'clicked');"
+                           target="_blank">
+                            ${article.title}
+                        </a>
+                        <div class="article-actions">
+                            <button class="action-btn star ${article.starred ? 'active' : ''}" 
+                                    onclick="toggleStar('${article.url}', '${article.article_id}', '${escapeHtml(article.title)}', '${escapeHtml(article.author)}', ${article.starred})"
+                                    title="Star this article">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="action-btn dislike ${article.disliked ? 'active' : ''}" 
+                                    onclick="toggleDislike('${article.url}', '${article.article_id}', '${escapeHtml(article.title)}', '${escapeHtml(article.author)}', ${article.disliked})"
+                                    title="Dislike this article">
+                                <i class="fas fa-thumbs-down"></i>
+                            </button>
+                            <button class="action-btn bookmark ${article.bookmarked ? 'active' : ''}" 
+                                    onclick="toggleBookmark('${article.url}', ${article.bookmarked})"
+                                    title="Bookmark this article">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                            <button class="action-btn read" 
+                                    onclick="${article.read ? `markAsUnread('${article.url}', '${article.article_id}', '${escapeHtml(article.title)}', '${escapeHtml(article.author)}')` : `markAsRead('${article.url}', '${article.article_id}', '${escapeHtml(article.title)}', '${escapeHtml(article.author)}', 'marked')`}"
+                                    title="${article.read ? 'Mark as unread' : 'Mark as read'}">
+                                <i class="fas ${article.read ? 'fa-undo' : 'fa-check'}"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="article-meta">
+                        <span class="article-source">
+                            <i class="fas fa-globe"></i>
+                            ${article.author}
+                        </span>
+                        <span class="article-date">
+                            <i class="fas fa-clock"></i>
+                            ${article.formatted_timestamp || new Date(article.timestamp * 1000).toLocaleDateString()}
+                        </span>
+                    </div>
+                    ${article.preview ? `<div class="article-preview">${article.preview}</div>` : ''}
+                </div>
+            `).join('');
+
+            articleList.innerHTML = articlesHtml;
+        }
+
+        function updatePagination(data) {
+            const pagination = document.getElementById('pagination');
+            const paginationInfo = document.getElementById('paginationInfo');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (data.total === 0) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'block';
+
+            const start = (data.page - 1) * data.per_page + 1;
+            const end = Math.min(data.page * data.per_page, data.total);
+
+            paginationInfo.textContent = `Showing ${start}-${end} of ${data.total} articles`;
+
+            prevBtn.disabled = data.page <= 1;
+            nextBtn.disabled = !data.has_more;
+
+            totalPages = Math.ceil(data.total / data.per_page);
+        }
+
+        function updateContentInfo(data) {
+            const contentInfo = document.getElementById('contentInfo');
+            contentInfo.textContent = `${data.total} articles`;
+        }
+
+        function updateArticleCount() {
+            // Update the article count display after removing articles
+            const remainingArticles = document.querySelectorAll('.article-item:not(.removing)').length;
+            const contentInfo = document.getElementById('contentInfo');
+            if (contentInfo) {
+                contentInfo.textContent = `${remainingArticles} articles`;
+            }
+
+            // Update pagination info if it exists
+            const paginationInfo = document.getElementById('paginationInfo');
+            if (paginationInfo && remainingArticles > 0) {
+                const currentText = paginationInfo.textContent;
+                const match = currentText.match(/Showing (\d+)-(\d+) of (\d+)/);
+                if (match) {
+                    const start = parseInt(match[1]);
+                    const end = Math.min(parseInt(match[2]), remainingArticles);
+                    paginationInfo.textContent = `Showing ${start}-${end} of ${remainingArticles} articles`;
+                }
+            }
+        }
+
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                loadArticles();
+            }
+        }
+
+        async function markAsRead(url, articleId, title, author, interactionType) {
+            try {
+                // Show loading state
+                const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                if (articleElement) {
+                    articleElement.style.opacity = '0.5';
+                }
+
+                const response = await fetch('/mark_read', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        action: 'read',
+                        article_id: articleId,
+                        title: title,
+                        author: author,
+                        interaction_type: interactionType
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showSuccessMessage('Article marked as read');
+
+                    // Update UI dynamically without full refresh
+                    if (articleElement) {
+                        // Update the read button icon and title
+                        const readButton = articleElement.querySelector('.action-btn.read');
+                        const readIcon = readButton?.querySelector('i');
+                        if (readButton && readIcon) {
+                            readIcon.className = 'fas fa-undo';
+                            readButton.title = 'Mark as unread';
+                            readButton.onclick = () => markAsUnread(url, articleId, title, author);
+                        }
+
+                        // Add read styling
+                        articleElement.classList.add('read');
+                        articleElement.style.opacity = '1'; // Restore opacity
+
+                        // If we're in unread view, fade out and remove the article
+                        if (currentView === 'unread') {
+                            articleElement.classList.add('removing');
+                            setTimeout(() => {
+                                articleElement.remove();
+                                updateArticleCount();
+                            }, 300);
+                        }
+                    }
+
+                    // Update stats without full reload
+                    loadQuickStats();
+                } else {
+                    console.error('Failed to mark as read:', result.error);
+                    // Restore original state
+                    if (articleElement) {
+                        articleElement.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                console.error('Error marking as read:', error);
+                // Restore original state
+                const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                if (articleElement) {
+                    articleElement.style.opacity = '1';
+                }
+            }
+        }
+
+        async function markAsUnread(url, articleId, title, author) {
+            try {
+                const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                if (articleElement) {
+                    articleElement.style.opacity = '0.5';
+                }
+
+                const response = await fetch('/mark_read', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        action: 'unread',
+                        article_id: articleId,
+                        title: title,
+                        author: author
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showSuccessMessage('Article marked as unread');
+
+                    // Update UI dynamically
+                    if (articleElement) {
+                        const readButton = articleElement.querySelector('.action-btn.read');
+                        const readIcon = readButton?.querySelector('i');
+                        if (readButton && readIcon) {
+                            readIcon.className = 'fas fa-check';
+                            readButton.title = 'Mark as read';
+                            readButton.onclick = () => markAsRead(url, articleId, title, author, 'marked');
+                        }
+
+                        // Remove read styling
+                        articleElement.classList.remove('read');
+                        articleElement.style.opacity = '1';
+                    }
+
+                    loadQuickStats();
+                } else {
+                    console.error('Failed to mark as unread:', result.error);
+                    if (articleElement) {
+                        articleElement.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                console.error('Error marking as unread:', error);
+                const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                if (articleElement) {
+                    articleElement.style.opacity = '1';
+                }
+            }
+        }
+
+        async function toggleStar(url, articleId, title, author, isStarred) {
+            try {
+                const action = isStarred ? 'unstar' : 'star';
+                const response = await fetch('/star', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        action: action,
+                        article_id: articleId,
+                        title: title,
+                        author: author
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showSuccessMessage(isStarred ? 'Article unstarred' : 'Article starred');
+
+                    // Update UI dynamically
+                    const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                    if (articleElement) {
+                        const starButton = articleElement.querySelector('.action-btn.star');
+                        const starIcon = starButton?.querySelector('i');
+
+                        if (starButton && starIcon) {
+                            if (isStarred) {
+                                // Unstarring
+                                starButton.classList.remove('active');
+                                starButton.onclick = () => toggleStar(url, articleId, title, author, false);
+                            } else {
+                                // Starring
+                                starButton.classList.add('active');
+                                starButton.onclick = () => toggleStar(url, articleId, title, author, true);
+                            }
+                        }
+                    }
+
+                    loadQuickStats();
+                } else {
+                    console.error('Failed to toggle star:', result.error);
+                }
+            } catch (error) {
+                console.error('Error toggling star:', error);
+            }
+        }
+
+        async function toggleDislike(url, articleId, title, author, isDisliked) {
+            try {
+                const action = isDisliked ? 'undislike' : 'dislike';
+
+                // Show loading state
+                const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                if (articleElement && !isDisliked) {
+                    articleElement.style.opacity = '0.5';
+                }
+
+                const response = await fetch('/dislike', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        action: action,
+                        article_id: articleId,
+                        title: title,
+                        author: author
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showSuccessMessage(isDisliked ? 'Article undisliked' : 'Article disliked');
+
+                    // Update UI dynamically
+                    if (articleElement) {
+                        const dislikeButton = articleElement.querySelector('.action-btn.dislike');
+                        const dislikeIcon = dislikeButton?.querySelector('i');
+
+                        if (dislikeButton && dislikeIcon) {
+                            if (isDisliked) {
+                                // Undisliking
+                                dislikeButton.classList.remove('active');
+                                dislikeButton.onclick = () => toggleDislike(url, articleId, title, author, false);
+                                articleElement.style.opacity = '1';
+                            } else {
+                                // Disliking - fade out and remove
+                                dislikeButton.classList.add('active');
+                                articleElement.classList.add('removing');
+
+                                setTimeout(() => {
+                                    articleElement.remove();
+                                    updateArticleCount();
+                                }, 300);
+                            }
+                        }
+                    }
+
+                    loadQuickStats();
+                } else {
+                    console.error('Failed to toggle dislike:', result.error);
+                    // Restore original state
+                    if (articleElement) {
+                        articleElement.style.opacity = '1';
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling dislike:', error);
+                // Restore original state
+                const articleElement = document.querySelector(`[onclick*="${articleId}"]`)?.closest('.article-item');
+                if (articleElement) {
+                    articleElement.style.opacity = '1';
+                }
+            }
+        }
+
+        async function toggleBookmark(url, isBookmarked) {
+            try {
+                const action = isBookmarked ? 'remove' : 'add';
+                const response = await fetch('/bookmark', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        action: action
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    loadArticles();
+                }
+            } catch (error) {
+                console.error('Error toggling bookmark:', error);
+            }
+        }
+
+        async function trackInteraction(type, articleId, title, author) {
+            try {
+                await fetch('/api/track_interaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: type,
+                        article_id: articleId,
+                        title: title,
+                        author: author
+                    })
+                });
+            } catch (error) {
+                console.error('Error tracking interaction:', error);
+            }
+        }
+
+        async function loadQuickStats() {
+            try {
+                const response = await fetch('/api/recommendation_stats');
+                const stats = await response.json();
+
+                document.getElementById('totalRead').textContent = stats.total_consumed || 0;
+                document.getElementById('totalStarred').textContent = stats.total_starred || 0;
+
+                // Get unified stats for cross-platform info
+                const unifiedResponse = await fetch('/api/unified_stats');
+                const unifiedStats = await unifiedResponse.json();
+
+                const crossPlatformCount = Object.keys(unifiedStats.cross_correlations || {}).length;
+                document.getElementById('crossPlatform').textContent = crossPlatformCount;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Feed Management Functions
+        let currentFeeds = [];
+
+        async function showSubscriptions() {
+            document.getElementById('feedModal').classList.add('show');
+            await loadFeeds();
+        }
+
+        function closeFeedModal() {
+            document.getElementById('feedModal').classList.remove('show');
+        }
+
+        async function loadFeeds() {
+            try {
+                const response = await fetch('/api/subscriptions');
+                const feeds = await response.json();
+                currentFeeds = feeds;
+                displayFeeds(feeds);
+            } catch (error) {
+                console.error('Error loading feeds:', error);
+                document.getElementById('feedListContainer').innerHTML =
+                    '<div class="error">Error loading feeds</div>';
+            }
+        }
+
+        function displayFeeds(feeds) {
+            const container = document.getElementById('feedListContainer');
+
+            if (feeds.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h4>No feeds configured</h4>
+                        <p>Add your first news feed using the form above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const feedsHtml = feeds.map((feed, index) => `
+                <div class="feed-item" data-index="${index}">
+                    <div class="feed-info">
+                        <div class="feed-name">${escapeHtml(feed.name)}</div>
+                        <div class="feed-url">${escapeHtml(feed.url)}</div>
+                    </div>
+                    <div class="feed-actions">
+                        <button class="btn btn-small btn-danger" onclick="removeFeed(${index})">
+                            <i class="fas fa-trash"></i>
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = feedsHtml;
+        }
+
+        async function addFeed() {
+            const nameInput = document.getElementById('feedName');
+            const urlInput = document.getElementById('feedUrl');
+
+            const name = nameInput.value.trim();
+            const url = urlInput.value.trim();
+
+            if (!name || !url) {
+                alert('Please enter both feed name and URL');
+                return;
+            }
+
+            // Validate URL format
+            try {
+                new URL(url);
+            } catch (e) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            // Check for duplicates
+            if (currentFeeds.some(feed => feed.url === url)) {
+                alert('This feed URL is already added');
+                return;
+            }
+
+            // Add to current feeds
+            currentFeeds.push({ name, url });
+            displayFeeds(currentFeeds);
+
+            // Clear form
+            nameInput.value = '';
+            urlInput.value = '';
+        }
+
+        function removeFeed(index) {
+            if (confirm('Are you sure you want to remove this feed?')) {
+                currentFeeds.splice(index, 1);
+                displayFeeds(currentFeeds);
+            }
+        }
+
+        async function saveFeedChanges() {
+            try {
+                const response = await fetch('/api/subscriptions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        subscriptions: currentFeeds
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Feed changes saved successfully!');
+                    closeFeedModal();
+                    // Optionally reload articles
+                    loadArticles();
+                } else {
+                    alert('Error saving changes: ' + (result.error || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error saving feeds:', error);
+                alert('Error saving changes: ' + error.message);
+            }
+        }
+
+        // Stats Functions
+        async function showStats() {
+            document.getElementById('statsModal').classList.add('show');
+            await loadDetailedStats();
+        }
+
+        function closeStatsModal() {
+            document.getElementById('statsModal').classList.remove('show');
+        }
+
+        async function loadDetailedStats() {
+            try {
+                const [newsResponse, unifiedResponse] = await Promise.all([
+                    fetch('/api/recommendation_stats'),
+                    fetch('/api/unified_stats')
+                ]);
+
+                const newsStats = await newsResponse.json();
+                const unifiedStats = await unifiedResponse.json();
+
+                displayDetailedStats(newsStats, unifiedStats);
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('statsContent').innerHTML =
+                    '<div class="error">Error loading statistics</div>';
+            }
+        }
+
+        function displayDetailedStats(newsStats, unifiedStats) {
+            const statsHtml = `
+                <div style="display: grid; gap: 2rem;">
+                    <div>
+                        <h4><i class="fas fa-newspaper"></i> News Statistics</h4>
+                        <div style="display: grid; gap: 1rem; margin-top: 1rem;">
+                            <div class="stat-item">
+                                <span>Articles Read:</span>
+                                <span class="stat-value">${newsStats.total_consumed || 0}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Articles Starred:</span>
+                                <span class="stat-value">${newsStats.total_starred || 0}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Articles Disliked:</span>
+                                <span class="stat-value">${newsStats.total_disliked || 0}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4><i class="fas fa-globe"></i> Top News Sources</h4>
+                        <div style="margin-top: 1rem;">
+                            ${Object.entries(newsStats.top_sources || {}).slice(0, 5).map(([source, score]) => `
+                                <div class="stat-item">
+                                    <span>${source}</span>
+                                    <span class="stat-value">${score.toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4><i class="fas fa-tags"></i> Top Keywords</h4>
+                        <div style="margin-top: 1rem;">
+                            ${Object.entries(newsStats.top_keywords || {}).slice(0, 5).map(([keyword, score]) => `
+                                <div class="stat-item">
+                                    <span>${keyword}</span>
+                                    <span class="stat-value">${score.toFixed(2)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4><i class="fas fa-link"></i> Cross-Platform Correlations</h4>
+                        <div style="margin-top: 1rem;">
+                            ${Object.entries(unifiedStats.cross_correlations || {}).slice(0, 5).map(([correlation, strength]) => `
+                                <div class="stat-item">
+                                    <span>${correlation}</span>
+                                    <span class="stat-value">${strength.toFixed(3)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('statsContent').innerHTML = statsHtml;
+        }
+
+        // Modal click outside to close
+        document.addEventListener('click', function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+            }
+        });
+
+        // Success message function
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+
+            document.body.appendChild(successDiv);
+
+            setTimeout(() => {
+                successDiv.style.animation = 'slideInRight 0.3s ease reverse';
+                setTimeout(() => {
+                    if (document.body.contains(successDiv)) {
+                        document.body.removeChild(successDiv);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML.replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+
+</html>
